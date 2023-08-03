@@ -1,0 +1,34 @@
+<div class="col-xl-4 col-md-6">
+    <!-- card -->
+    <div class="card card-animate{{ home_widget.bgColor != '' ? ' bg-' ~ home_widget.bgColor : '' }}">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1 overflow-hidden">
+                    <p class="text-uppercase fw-bold {{ home_widget.iconColor != '' ? ' text-' ~ home_widget.iconColor : '' }} text-truncate mb-2 fs-18">
+                        {{ home_widget.libelle != '' ? home_widget.libelle : home_widget.module }}
+                    </p>
+                </div>
+                {% if home_widget.libelle != '' %}
+                    <div class="flex-shrink-0">
+                        <h5 class="text-white fs-14 mb-0">(Hors service Capôt)</h5>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="d-flex align-items-end justify-content-between mt-4">
+                <div>
+                    <h4 class="fs-22 fw-semibold ff-secondary mb-4{{ home_widget.iconColor != '' ? ' text-' ~ home_widget.iconColor : '' }}">
+                        <span class="counter-value" data-target="{{ home_widget.elementsRate }}">0</span> Dhs
+                    </h4>
+                    <a href="{{ path(app.request.attributes.get('_route')) }}{{ home_widget.moduleName }}" class="text-decoration-underline text-white-50">
+                        Voir la liste
+                    </a>
+                </div>
+                <div class="avatar-sm flex-shrink-0">
+                    <span class="avatar-title{{ home_widget.iconColor != '' ? ' bg-' ~ home_widget.iconColor : '' }} rounded-circle fs-2">
+                        <i class="la {{ home_widget.module ? home_widget.icon : 'la-info' }}{{ home_widget.bgColor != '' ? ' text-' ~ home_widget.bgColor : '' }} text-50"></i>
+                    </span>
+                </div>
+            </div>
+        </div><!-- end card body -->
+    </div><!-- end card -->
+</div><!-- end col -->

@@ -1,0 +1,42 @@
+# Documentation on how to configure the bundle can be found at: https://symfony.com/doc/current/bundles/LiipImagineBundle/basic-usage.html
+liip_imagine:
+
+  # valid drivers options include "gd" or "gmagick" or "imagick"
+  driver: "imagick"
+
+  default_image: /assets/images/users/user-dummy-img.jpg
+
+  webp:
+    generate: true
+
+  default_filter_set_settings:
+    format: webp
+
+  filter_sets:
+
+    image_large:
+      quality: 100
+      jpeg_quality: 100
+      filters:
+        thumbnail:
+          size: [ 1200, 675 ]
+          mode: outbound
+          upscale: true
+
+    image_medium:
+      quality: 100
+      jpeg_quality: 100
+      filters:
+        thumbnail:
+          size: [ 355, 200 ]
+          mode: outbound
+          upscale: true
+
+    image_thumbnail:
+      quality: 100
+      jpeg_quality: 100
+      filters:
+        thumbnail:
+          size: [ 32, 32 ]
+          mode: outbound
+          upscale: true

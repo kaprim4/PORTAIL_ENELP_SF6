@@ -1,0 +1,268 @@
+{% extends 'body.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+                <i class="ri-check-double-line label-icon"></i> {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if user_role.alias == 'ROLE_STATION' %}
+        <div class="row">
+            {{ include('price/kpi/_site.info.html.twig') }}
+            {{ include('price/kpi/_wholesale.price.info.html.twig') }}
+            {{ include('price/kpi/_actual.price.info.html.twig') }}
+        </div>
+    {% endif %}
+
+    {% set countdown_delay = price.createdAt|date_modify('+' ~ limit_for_cancel ~ ' minutes')|date('Y-m-d H:i:s') %}
+    {% if countdown_delay >= "now"|date('Y-m-d H:i:s') %}
+        <!-- Warning Alert -->
+        <div id="countdown-alert" class="alert alert-warning alert-dismissible alert-additional fade show" role="alert">
+            <div class="alert-body">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="ri-alert-line fs-16 align-middle"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="alert-heading">Avis pour annulation !</h5>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i> Vous avez un délai de <b>{{ limit_for_cancel }}
+                                minutes</b> pour annuler et
+                            abondonner ce changement de prix.
+                        </p>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i> Si vous pensez qu'il s'agit d'une <b>erreur</b> ou
+                            autre, et que vous vouliez <b>annuler et
+                                abondonner</b> ce changement, merci de cliquer sur <b>supprimer</b>.
+                        </p>
+                        <i id="clock-arrow" class="mdi mdi-arrow-right-bold"></i> <span id="clock"
+                                                                                        class="badge rounded-pill bg-danger fs-6"></span>
+                        <input type="hidden" id="countdown_delay" value="{{ countdown_delay }}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="alert-content">
+                <div class="mb-0 text-black overflow-hidden align-content-center">
+                    {{ include('price/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1 fs-3 text-primary">
+                <i class="las la-info bg-soft-primary rounded-circle fs-2 p-1"></i> Détails de votre proposition de
+                changement de prix
+                <p class="text-uppercase fw-medium mt-3 mb-0 fs-6"></p>
+            </h4>
+            <div class="flex-shrink-0">
+                {% if user_role.alias == 'ROLE_STATION' %}
+                    <a href="{{ path('app_price_new') }}" class="btn btn-primary btn-md">
+                        <i class="las la-plus-circle"></i>
+                        <span class="kt-hidden-mobile">Nouveau changement de prix</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div><!-- end card header -->
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ price.id }}</td>
+                </tr>
+                <tr>
+                    <th>Station</th>
+                    <td>
+                        <b>{{ price.gasStation.codeSap }}</b> -
+                        <a href="{{ path('app_gas_station_show', { 'id': price.gasStation.id }) }}">
+                            {{ price.gasStation.libelle }}
+                        </a>
+                        {% if price.gasStation.supervisor %}
+                            {% if price.gasStation.supervisor.id != 0 %}
+                                <br><small>
+                                <i class="las la-user-tie bg-soft-primary rounded-circle fs-5 p-1"></i>
+                                {{ price.gasStation.supervisor.firstName ~ ' - ' ~ price.gasStation.supervisor.lastName }}
+                            {% endif %}
+                            </small>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Evnt. HO</th>
+                    <td>{{ price.eventNumHO }}</td>
+                </tr>
+                <tr>
+                    <th>GASOIL</th>
+                    <td>
+                        {% for price_row in price.priceRows %}
+                            {% if price_row.grade.id == 2 %}
+                                <span class="badge rounded-pill bg-success fs-6">
+                                    {{ price_row.newValue }}
+                                </span>
+                                {% if price_row.newValue > price_row.oldValue %}
+                                    <i class="mdi mdi-trending-up align-middle me-1 text-success fs-5 ms-2"></i>
+                                {% else %}
+                                    <i class="mdi mdi-trending-down align-middle me-1 text-danger fs-5 ms-2"></i>
+                                {% endif %}
+                                <span class="badge badge-soft-primary rounded-pill text-decoration-underline fs-7 mt-1">
+                                    {{ price_row.oldValue }}
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>SSP</th>
+                    <td>
+                        {% for price_row in price.priceRows %}
+                            {% if price_row.grade.id == 1 %}
+                                <span class="badge rounded-pill bg-success fs-6">
+                                    {{ price_row.newValue }}
+                                </span>
+                                {% if price_row.newValue > price_row.oldValue %}
+                                    <i class="mdi mdi-trending-up align-middle me-1 text-success fs-5 ms-2"></i>
+                                {% else %}
+                                    <i class="mdi mdi-trending-down align-middle me-1 text-danger fs-5 ms-2"></i>
+                                {% endif %}
+                                <span class="badge badge-soft-primary rounded-pill text-decoration-underline fs-7 mt-1">
+                                    {{ price_row.oldValue }}
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Mélange</th>
+                    <td>
+                        {% for price_row in price.priceRows %}
+                            {% if price_row.grade.id not in [1,2] %}
+                                {% set color = "" %}
+                                {% set icon = "" %}
+                                {% if price_row.newValue > price_row.oldValue %}
+                                    {% set color = "success" %}
+                                    {% set icon = "mdi-trending-up" %}
+                                {% else %}
+                                    {% set color = "danger" %}
+                                    {% set icon = "mdi-trending-down" %}
+                                {% endif %}
+                                <div class="alert bg-soft-primary alert-dismissible alert-solid alert-label-icon fade show pe-1 py-2 mx-1 my-1 d-inline-block"
+                                     role="alert">
+                                    <i class="label-icon fs-6">
+                                        <b>{{ price_row.grade.libelle }}</b>
+                                    </i>
+                                    <strong>
+                                        <span class="badge badge-info bg-info rounded-pill fs-6">{{ price_row.newValue }}</span>
+                                    </strong>
+                                    <i class="mdi {{ icon }} text-{{ color }}"></i>
+                                    <span class="badge badge-soft-primary rounded-pill text-decoration-underline fs-7 mt-1">
+                                        {{ price_row.oldValue }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Saisie le</th>
+                    <td>
+                        {% if price.createdAt %}
+                            <i class="las la-calendar-alt bg-soft-primary rounded-circle p-1"></i> {{ price.createdAt|date('d/m/Y') }}
+                            <i class="las la-clock bg-soft-primary rounded-circle p-1 mt-1 ms-2"></i> {{ price.createdAt|date('H:i') }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Appliquée le</th>
+                    <td>
+                        {% if price.appliedAt %}
+                            <span class="fw-bold">
+                                    <i class="las la-calendar-alt bg-soft-success rounded-circle p-1"></i> {{ price.appliedAt|date('d/m/Y') }}
+                                    <i class="las la-clock bg-soft-success rounded-circle p-1 mt-1 ms-2"></i> {{ price.appliedAt|date('H:i') }}
+                                </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="las la-laptop-code"></i></th>
+                    <td>
+                        {% if price.priceStatistics %}
+                            <b>{{ price.priceStatistics.source }}</b><br>
+                            {% if price.priceStatistics.webPlateform == 'Android' %}
+                                <i class="mdi mdi-android bg-success text-light rounded-circle fs-5 px-1"></i>
+                                <span class="badge badge-soft-primary rounded-pill fs-7">
+                                        {{ price.priceStatistics.buildVersion }}
+                                    </span>
+                            {% else %}
+                                {% set wpf = price.priceStatistics.webPlateform|split('|', 3) %}
+                                {% if 'Safari' in wpf[0] %}
+                                    <i class="mdi mdi-apple-safari bg-success text-light rounded-circle fs-5 px-1"
+                                       title="{{ wpf[0] }}"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf[1] }}
+                                        </span>
+                                {% elseif 'Chrome' in wpf[0] %}
+                                    {% set wpf_chrome = wpf[1]|split('.', 4) %}
+                                    <i class="mdi mdi-google-chrome badge-gradient-danger text-light rounded-circle fs-5 px-1"
+                                       title="{{ wpf[0] }}"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_chrome[0] }}
+                                        </span>
+                                {% elseif 'Firefox' in wpf[0] %}
+                                    {% set wpf_chrome = wpf[1]|split('.', 4) %}
+                                    <i class="mdi mdi-firefox bg-warning text-light rounded-circle fs-5 px-1"
+                                       title="{{ wpf[0] }}"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_chrome[0] }}
+                                        </span>
+                                {% endif %}<br>
+                                <span class="badge text-dark fs-7">{{ wpf[0] }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Statut</th>
+                    <td>
+                        <span class="fw-bold">
+                            <i class="las {{ price.priceStatus.icon }} bg-soft-{{ price.priceStatus.color }} rounded-circle p-1 mt-1"></i>
+                            <span class="text-{{ price.priceStatus.color }}">{{ price.priceStatus.libelle }}</span>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                <a href="{{ path('app_price_edit', {'id': price.id}) }}" class="btn btn-success float-start">
+                    <i class="las la-edit fs-5"></i>
+                    <span class="kt-hidden-mobile">Modifier cette entrée</span>
+                </a>
+            {% else %}
+                {% if countdown_delay >= "now"|date('Y-m-d H:i:s') %}
+                    <a href="{{ path('app_price_edit', {'id': price.id}) }}" class="btn btn-success float-start">
+                        <i class="las la-edit fs-5"></i>
+                        <span class="kt-hidden-mobile">Modifier cette entrée</span>
+                    </a>
+                {% endif %}
+            {% endif %}
+            {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                {{ include('price/_delete_form.html.twig') }}
+            {% endif %}
+            <a href="{{ path('app_price_index') }}" class="btn btn-info float-end">
+                <i class="la la-arrow-left"></i>
+                <span class="kt-hidden-mobile">Retour à la liste</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

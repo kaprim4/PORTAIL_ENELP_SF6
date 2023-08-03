@@ -1,0 +1,380 @@
+{% extends 'body.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+                <i class="ri-check-double-line label-icon"></i> {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if user_role.alias == 'ROLE_STATION' %}
+        <div class="row">
+            {{ include('claim/kpi/_site.info.html.twig') }}
+            {{ include('claim/kpi/_claim.info.html.twig') }}
+        </div>
+    {% endif %}
+
+    {% set countdown_delay = claim.createdAt|date_modify('+' ~ limit_for_cancel ~ ' minutes')|date('Y-m-d H:i:s') %}
+    {% if countdown_delay >= "now"|date('Y-m-d H:i:s') %}
+        <!-- Warning Alert -->
+        <div id="countdown-alert" class="alert alert-warning alert-dismissible alert-additional fade show" role="alert">
+            <div class="alert-body">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="ri-alert-line fs-16 align-middle"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="alert-heading">Avis pour annulation !</h5>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i>
+                            Vous avez un délai de <b>{{ limit_for_cancel }}minutes</b> pour annuler et abondonner ce
+                            changement de prix.
+                        </p>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i>
+                            Si vous pensez qu'il s'agit d'une <b>erreur</b> ou autre, et que vous vouliez <b>annuler et
+                                abondonner</b> ce changement, merci de cliquer sur <b>supprimer</b>.
+                        </p>
+                        <i id="clock-arrow" class="mdi mdi-arrow-right-bold"></i>
+                        <span id="clock" class="badge rounded-pill bg-danger fs-6"></span>
+                        <input type="hidden" id="countdown_delay" value="{{ countdown_delay }}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="alert-content">
+                <div class="mb-0 text-black overflow-hidden align-content-center">
+                    {{ include('claim/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1 fs-3 text-primary">
+                <i class="las la-info bg-soft-primary rounded-circle fs-2 p-1"></i> Détails de votre réclamation
+                <p class="text-uppercase fw-medium mt-3 mb-0 fs-6"></p>
+            </h4>
+            <div class="flex-shrink-0">
+                {% if user_role.alias == 'ROLE_STATION' %}
+                    <a href="{{ path('app_claim_new') }}" class="btn btn-primary btn-md">
+                        <i class="las la-plus-circle"></i>
+                        <span class="kt-hidden-mobile">Nouvelle réclamation</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div><!-- end card header -->
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>#</th>
+                    <td>{{ claim.id }}</td>
+                </tr>
+                <tr>
+                    <th>Site</th>
+                    <td>
+                        <b>{{ claim.gasStation.codeSap }}</b> -
+                        <a href="{{ path('app_gas_station_show', { 'id': claim.gasStation.id }) }}">
+                            {{ claim.gasStation.libelle }}
+                        </a>
+                        {% if claim.gasStation.supervisor.id != 0 %}
+                            <br>
+                            <small>
+                                <i class="las la-user-tie bg-soft-primary rounded-circle fs-5 p-1"></i>
+                                {{ claim.gasStation.supervisor.firstName ~ ' - ' ~ claim.gasStation.supervisor.lastName }}
+                            </small>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Référence Ticket</th>
+                    <td>
+                            <span class="badge rounded-pill bg-success fs-6">
+                                {{ claim.reference }}
+                            </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Date & Heure</th>
+                    <td>
+                        {% if claim.createdAt %}
+                            <i class="las la-calendar-alt bg-soft-primary rounded-circle p-1"></i> {{ claim.createdAt|date('d/m/Y') }}
+                            <i class="las la-clock bg-soft-primary rounded-circle p-1 mt-1 ms-2"></i> {{ claim.createdAt|date('H:i') }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>
+                        {{ claim.description|raw }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Audio</th>
+                    <td>
+                        {{ claim.audio }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Img 1</th>
+                    <td>
+                        {% if vich_uploader_asset(claim, 'imageFile1') is null %}
+                            <img class="rounded-circle"
+                                 src="{{ asset('images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName1 }}" data-bs-toggle="modal" data-bs-target="#imageFile1Modal">
+                        {% else %}
+                            <img class="rounded-circle"
+                                 src="{{ vich_uploader_asset(claim, 'imageFile1') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName1 }}" data-bs-toggle="modal" data-bs-target="#imageFile1Modal">
+                            <!-- Default Modals -->
+                            <div id="imageFile1Modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel"
+                                 aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">Aperçu de l'image 04</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if vich_uploader_asset(claim, 'imageFile1') is null %}
+                                                <img class="rounded-circle"
+                                                     src="{{ asset('images/no_image.png') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName1 }}">
+                                            {% else %}
+                                                <img class="w-100"
+                                                     src="{{ vich_uploader_asset(claim, 'imageFile1') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName1 }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Img 2</th>
+                    <td>
+                        {% if vich_uploader_asset(claim, 'imageFile2') is null %}
+                            <img class="rounded-circle"
+                                 src="{{ asset('images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName2 }}" data-bs-toggle="modal" data-bs-target="#imageFile2Modal">
+                        {% else %}
+                            <img class="rounded-circle"
+                                 src="{{ vich_uploader_asset(claim, 'imageFile2') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName2 }}" data-bs-toggle="modal" data-bs-target="#imageFile2Modal">
+                            <!-- Default Modals -->
+                            <div id="imageFile2Modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel"
+                                 aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">Aperçu de l'image 04</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if vich_uploader_asset(claim, 'imageFile2') is null %}
+                                                <img class="rounded-circle"
+                                                     src="{{ asset('images/no_image.png') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName2 }}">
+                                            {% else %}
+                                                <img class="w-100"
+                                                     src="{{ vich_uploader_asset(claim, 'imageFile2') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName2 }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Img 3</th>
+                    <td>
+                        {% if vich_uploader_asset(claim, 'imageFile3') is null %}
+                            <img class="rounded-circle"
+                                 src="{{ asset('images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName3 }}" data-bs-toggle="modal" data-bs-target="#imageFile3Modal">
+                        {% else %}
+                            <img class="rounded-circle"
+                                 src="{{ vich_uploader_asset(claim, 'imageFile3') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName3 }}" data-bs-toggle="modal" data-bs-target="#imageFile3Modal">
+                            <!-- Default Modals -->
+                            <div id="imageFile3Modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel"
+                                 aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">Aperçu de l'image 04</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if vich_uploader_asset(claim, 'imageFile3') is null %}
+                                                <img class="rounded-circle"
+                                                     src="{{ asset('images/no_image.png') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName3 }}">
+                                            {% else %}
+                                                <img class="w-100"
+                                                     src="{{ vich_uploader_asset(claim, 'imageFile3') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName3 }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Img 4</th>
+                    <td>
+                        {% if vich_uploader_asset(claim, 'imageFile4') is null %}
+                            <img class="rounded-circle"
+                                 src="{{ asset('images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName4 }}" data-bs-toggle="modal" data-bs-target="#imageFile4Modal">
+                        {% else %}
+                            <img class="rounded-circle"
+                                 src="{{ vich_uploader_asset(claim, 'imageFile4') | imagine_filter('image_thumbnail') }}"
+                                 alt="{{ claim.imageName4 }}" data-bs-toggle="modal" data-bs-target="#imageFile4Modal">
+                            <!-- Default Modals -->
+                            <div id="imageFile4Modal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel"
+                                 aria-hidden="true" style="display: none;">
+                                <div class="modal-dialog modal-xl">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="myModalLabel">Aperçu de l'image 04</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            {% if vich_uploader_asset(claim, 'imageFile4') is null %}
+                                                <img class="rounded-circle"
+                                                     src="{{ asset('images/no_image.png') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName4 }}">
+                                            {% else %}
+                                                <img class="w-100"
+                                                     src="{{ vich_uploader_asset(claim, 'imageFile4') | imagine_filter('image_large') }}"
+                                                     alt="{{ claim.imageName4 }}">
+                                            {% endif %}
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Mail envoyé ?</th>
+                    <td>
+                        {% if claim.isMailSent == 1 %}
+                            <span class="badge badge-label bg-success">
+                                    <i class="ri-check-double-line"></i> Oui
+                                </span>
+                        {% else %}
+                            <span class="badge badge-label bg-danger">
+                                    <i class="ri-check-double-line"></i> Non
+                                </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th><i class="las la-laptop-code"></i></th>
+                    <td>
+                        {% if claim.claimStatistic %}
+                            <b>{{ claim.claimStatistic.source }}</b><br>
+                            {% if claim.claimStatistic.webPlateform == 'Android' %}
+                                <i class="mdi mdi-android bg-success text-light rounded-circle fs-5 px-1"></i>
+                                <span class="badge badge-soft-primary rounded-pill fs-7">
+                                        {{ claim.claimStatistic.buildVersion }}
+                                    </span>
+                            {% else %}
+                                {% set wpf = claim.claimStatistic.webPlateform|split('|', 3) %}
+                                {% if 'Safari' in wpf[0] %}
+                                    <i class="mdi mdi-apple-safari bg-success text-light rounded-circle fs-5 px-1"
+                                       title="{{ wpf[0] }}"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf[1] }}
+                                        </span>
+                                {% elseif 'Chrome' in wpf[0] %}
+                                    {% set wpf_chrome = wpf[1]|split('.', 4) %}
+                                    <i class="mdi mdi-google-chrome badge-gradient-danger text-light rounded-circle fs-5 px-1"
+                                       title="{{ wpf[0] }}"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_chrome[0] }}
+                                        </span>
+                                {% elseif 'Firefox' in wpf[0] %}
+                                    {% set wpf_chrome = wpf[1]|split('.', 4) %}
+                                    <i class="mdi mdi-firefox bg-warning text-light rounded-circle fs-5 px-1"
+                                       title="{{ wpf[0] }}"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_chrome[0] }}
+                                        </span>
+                                {% endif %}<br>
+                                <span class="badge text-dark fs-7">{{ wpf[0] }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Statut</th>
+                    <td>
+                        <span class="fw-bold">
+                            <i class="las {{ claim.claimStatus.icon }} bg-soft-{{ claim.claimStatus.color }} rounded-circle p-1 mt-1"></i>
+                            <span class="text-{{ claim.claimStatus.color }}">{{ claim.claimStatus.libelle }}</span>
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            {% if user_role.alias != 'ROLE_SUPER_ADMIN' %}
+                <a href="{{ path('app_claim_edit', {'id': claim.id}) }}" class="btn btn-success float-start">
+                    <i class="las la-edit fs-5"></i>
+                    <span class="kt-hidden-mobile">Modifier cette entrée</span>
+                </a>
+                {{ include('claim/_delete_form.html.twig') }}
+            {% else %}
+                {% if countdown_delay >= "now"|date('Y-m-d H:i:s') %}
+                    <a href="{{ path('app_claim_edit', {'id': claim.id}) }}" class="btn btn-success float-start">
+                        <i class="las la-edit fs-5"></i>
+                        <span class="kt-hidden-mobile">Modifier cette entrée</span>
+                    </a>
+                {% endif %}
+            {% endif %}
+
+            <a href="{{ path('app_claim_index') }}" class="btn btn-info float-end">
+                <i class="la la-arrow-left"></i>
+                <span class="kt-hidden-mobile">Retour à la liste</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

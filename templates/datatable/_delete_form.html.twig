@@ -1,0 +1,7 @@
+<form class="d-inline" method="post" action="{{ path(app.request.attributes.get('_route')) }}{{ element.id }}"
+      onsubmit="return confirm('Voulez vous procèder à la suppression de cet entrée ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ element.id) }}">
+    <button class="submit btn btn-danger btn-icon btn-sm waves-effect waves-light ms-2">
+        <i class="las la-trash fs-4"></i>
+    </button>
+</form>

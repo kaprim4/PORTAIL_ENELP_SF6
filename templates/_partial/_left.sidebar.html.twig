@@ -1,0 +1,231 @@
+<!-- ========== App Menu ========== -->
+<div class="app-menu navbar-menu">
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <!-- Dark Logo-->
+        <a href="{{ path('app_home') }}" class="logo logo-dark mt-2">
+            <span class="logo-sm">
+                <img src="{{ asset('build/assets/images/logo-sm.png') }}" alt="" height="48">
+            </span>
+            <span class="logo-lg">
+                <img src="{{ asset('build/assets/images/logo-dark.png') }}" alt="" height="48">
+            </span>
+        </a>
+        <!-- Light Logo-->
+        <a href="{{ path('app_home') }}" class="logo logo-light mt-2">
+            <span class="logo-sm">
+                <img src="{{ asset('build/assets/images/logo-sm.png') }}" alt="" height="48">
+            </span>
+            <span class="logo-lg">
+                <img src="{{ asset('build/assets/images/logo-light.png') }}" alt="" height="48">
+            </span>
+        </a>
+        <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+                id="vertical-hover">
+            <i class="ri-record-circle-line"></i>
+        </button>
+    </div>
+
+    <div id="scrollbar">
+
+        <div class="container-fluid">
+            <div id="two-column-menu"></div>
+            <ul class="navbar-nav" id="navbar-nav">
+                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="{{ path('app_home') }}" role="button" aria-expanded="false">
+                        <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarMessagerie" data-bs-toggle="collapse" role="button"
+                       aria-expanded="false" aria-controls="sidebarModules">
+                        <i class="las la-sms"></i> <span data-key="t-apps">Messagerie</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarMessagerie">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ path('app_message_index') }}" class="nav-link" data-key="t-calendar">
+                                    Boîte de réception
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" data-key="t-calendar">
+                                    Messages no-lus
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#rapportModules" data-bs-toggle="collapse" role="button"
+                       aria-expanded="false" aria-controls="rapportModules">
+                        <i class="ri-file-list-3-line"></i> <span data-key="t-apps">Rapports</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="rapportModules">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link" data-key="t-calendar">
+                                        Durées de visite
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link" data-key="t-calendar">
+                                        Activité récente
+                                    </a>
+                                </li>
+                            </ul>
+                    </div>
+                </li>
+                {% endif %}
+                <li class="menu-title">
+                    <i class="ri-more-fill"></i> <span data-key="t-pages">Gestion</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link menu-link" href="#sidebarModules" data-bs-toggle="collapse" role="button"
+                       aria-expanded="false" aria-controls="sidebarModules">
+                        <i class="ri-apps-2-line"></i> <span data-key="t-apps">Modules</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarModules">
+                        <ul class="nav nav-sm flex-column">
+                            {% for module_menu in module_mod_menu %}
+                                {% if module_menu.parent == '' %}
+                                    <li class="nav-item">
+                                        {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                                            <a href="#sidebar-module-{{ module_menu.id }}" class="nav-link collapsed" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebar-module-{{ module_menu.id }}" data-key="t-signin">
+                                                <span data-key="t-job">
+                                                    <i class="la {{ module_menu.icon }} me-2"></i> {{ module_menu.libelle }}
+                                                </span>
+                                                <span class="badge badge-pill bg-success" data-key="t-new">New</span>
+                                            </a>
+                                            <div class="menu-dropdown collapse show" id="sidebar-module-{{ module_menu.id }}" style="">
+                                                <ul class="nav nav-sm flex-column">
+                                                    <a href="{{ path('app_' ~ module_menu.nameInDb ~ '_index') }}" class="nav-link">
+                                                        {{ module_menu.libelle }}
+                                                    </a>
+                                                    {% for sub_module_menu in module_menu.getModules %}
+                                                        <li class="nav-item">
+                                                            <a href="{{ path('app_' ~ sub_module_menu.nameInDb ~ '_index') }}" class="nav-link" data-key="t-calendar">
+                                                                {{ sub_module_menu.libelle }}
+                                                            </a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        {% else %}
+                                            <a href="{{ path('app_' ~ module_menu.nameInDb ~ '_index') }}" class="nav-link">
+                                                {{ module_menu.libelle }}
+                                            </a>
+                                        {% endif %}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </li>
+                {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarDictionnaire" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDictionnaire">
+                            <i class="ri-honour-line"></i>
+                            <span data-key="t-layouts">Dictionnaire</span>
+                        </a>
+                        <div class="collapse menu-dropdown" id="sidebarDictionnaire">
+                            <ul class="nav nav-sm flex-column">
+                                {% for module_menu in dictionnary_mod_menu %}
+                                    <li class="nav-item">
+                                        <a href="{{ path('app_' ~ module_menu.nameInDb ~ '_index') }}" class="nav-link"
+                                           data-key="t-calendar">
+                                            <i class="la {{ module_menu.icon }} me-2"></i> {{ module_menu.libelle }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebarParametres" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarParametres">
+                            <i class="ri-compasses-2-line"></i>
+                            <span data-key="t-icons">Paramètres</span>
+                        </a>
+                        <div class="collapse menu-dropdown" id="sidebarParametres">
+                            <ul class="nav nav-sm flex-column">
+                                {% for module_menu in parameter_mod_menu %}
+                                    <li class="nav-item">
+                                        <a href="{{ path('app_' ~ module_menu.nameInDb ~ '_index') }}" class="nav-link"
+                                           data-key="t-calendar">
+                                            <i class="la {{ module_menu.icon }} me-2"></i> {{ module_menu.libelle }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="menu-title">
+                        <i class="ri-more-fill"></i>
+                        <span data-key="t-pages">Utilisateurs & Accès</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#" role="button" aria-expanded="false">
+                            <i class="la la-users-cog"></i>
+                            <span data-key="t-icons">Rôles Manager</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ path('app_role_index') }}" role="button"
+                           aria-expanded="false">
+                            <i class="la la-user-cog"></i>
+                            <span data-key="t-icons">Rôles</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ path('app_user_index') }}" role="button"
+                           aria-expanded="false">
+                            <i class="la la-user"></i>
+                            <span data-key="t-icons">Utilisateurs</span>
+                        </a>
+                    </li>
+
+                    <li class="menu-title">
+                        <i class="ri-more-fill"></i>
+                        <span data-key="t-pages">Super Administrateur</span>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ path('app_module_index') }}" role="button"
+                           aria-expanded="false">
+                            <i class="las la-users-cog"></i>
+                            <span data-key="t-icons">Liste des modules</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ path('app_session_index') }}" role="button"
+                           aria-expanded="false">
+                            <i class="las la-user-times"></i>
+                            <span data-key="t-icons">Sessions</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ path('app_hook_index') }}" role="button"
+                           aria-expanded="false">
+                            <i class="las la-anchor"></i>
+                            <span data-key="t-icons">Emplacements</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="{{ path('app_widget_index') }}" role="button"
+                           aria-expanded="false">
+                            <i class="las la-plug"></i>
+                            <span data-key="t-icons">Widgets</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+
+    <div class="sidebar-background"></div>
+</div>
+<!-- Left Sidebar End -->
+

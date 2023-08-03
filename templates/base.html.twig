@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg" data-sidebar-image="none">
+<head>
+    <meta charset="utf-8"/>
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
+    <meta content="Themesbrand" name="author"/>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ asset('build/assets/images/logo-sm.png') }}">
+    {{ encore_entry_link_tags('assets/libs/swiper/swiper-bundle.min') }}
+    {{ encore_entry_link_tags('assets/css/bootstrap.min') }}
+    <!-- Theme Styles -->
+    {{ encore_entry_link_tags('assets/css/theme_css') }}
+    {{ encore_entry_script_tags('assets/js/layout') }}
+</head>
+<body>
+{% block body %}{% endblock %}
+{% block javascripts_footer %}
+    <!-- JAVASCRIPT -->
+    {{ encore_entry_script_tags('assets/libs/bootstrap/js/bootstrap.bundle.min') }}
+    {{ encore_entry_script_tags('assets/js/plugins') }}
+    <!-- Dashboard init -->
+    {{ encore_entry_script_tags('assets/js/pages/dashboard-ecommerce.init') }}
+    <!-- App js -->
+    {{ encore_entry_script_tags('assets/js/app') }}
+    <!-- particles js -->
+    {{ encore_entry_script_tags('assets/libs/particles.js/particles') }}
+    <!-- particles app js -->
+    {{ encore_entry_script_tags('assets/js/pages/particles.app') }}
+    <!-- password-addon init -->
+    {{ encore_entry_script_tags('assets/js/pages/password-addon.init') }}
+{% endblock %}
+</body>
+
+</html>
+
+

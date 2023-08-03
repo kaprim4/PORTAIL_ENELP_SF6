@@ -1,0 +1,32 @@
+{% extends 'body.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+                <i class="ri-check-double-line label-icon"></i> {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1 fs-3 text-primary">
+                <i class="las la-gas-pump bg-soft-primary rounded-circle fs-2 p-1"></i> Interventions techniques
+                <p class="text-uppercase fw-medium mt-3 mb-0 fs-6">
+                    Gestion des tickets des interventions techniques.
+                </p>
+            </h4>
+            <div class="flex-shrink-0">
+                <a href="{{ path('app_claim_index') }}" class="btn btn-soft-primary btn-md">
+                    <i class="las la-list"></i>
+                    <span class="kt-hidden-mobile">Retour à la liste</span>
+                </a>
+            </div>
+        </div><!-- end card header -->
+        {{ include('claim/_form.html.twig') }}
+    </div>
+{% endblock %}

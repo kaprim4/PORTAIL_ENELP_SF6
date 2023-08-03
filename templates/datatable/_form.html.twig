@@ -1,0 +1,44 @@
+{% for type, messages in app.flashes() %}
+    {% for message in messages %}
+        <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+            <i class="ri-check-double-line label-icon"></i> {{ message }}
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+    {% endfor %}
+{% endfor %}
+
+<div class="card">
+    {{ form_start(form) }}
+    <!-- start card header -->
+    <div class="card-header align-items-center d-flex">
+        <h4 class="card-title mb-0 flex-grow-1">
+            <i class="las {{ element_icon }} bg-soft-primary rounded-circle fs-2 p-1"></i> {{ title }}
+        </h4>
+    </div>
+    <!-- end card header -->
+
+    <!-- start card body -->
+    <div class="card-body">
+        <p class="text-muted"></p>
+        <div class="live-preview">
+            {{ form_widget(form, {'attr': {'class': 'row'}}) }}
+        </div>
+    </div>
+    <!-- end card body -->
+
+    <!-- start card footer -->
+    <div class="card-footer">
+        <button class="btn btn-success" type="submit">
+            <i class="las la-edit fs-5"></i>
+            <span class="kt-hidden-mobile">{{ button_label|default('Enregistrer') }}</span>
+        </button>
+        <a href="{{ list_link }}" class="btn btn-info float-end">
+            <i class="las la-arrow-left"></i>
+            <span class="kt-hidden-mobile">Retour à la liste</span>
+        </a>
+    </div>
+    <!-- end card footer -->
+
+    {{ form_end(form) }}
+</div>

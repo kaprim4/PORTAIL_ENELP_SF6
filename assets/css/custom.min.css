@@ -1,0 +1,130 @@
+/*# sourceMappingURL=custom.min.css.map
+
+.vich-image .form-check {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.vich-image img {
+    margin-bottom: 0.5rem !important;
+    border-radius: 0.25rem !important;
+    -webkit-box-shadow: 0 1px 2px rgba(56, 65, 74, .15) !important;
+    box-shadow: 0 1px 2px rgba(56, 65, 74, .15) !important;
+}
+
+*/
+
+.dataTables_empty{
+    padding: 25px !important;
+}
+.bloc_prices_container {
+    float: left;
+    width: 100%;
+}
+.bloc_prices{
+    float: left;
+}
+.bloc_indicator{
+    float: right;
+}
+.new_price {
+    background: #0abb87;
+    color: #fff;
+    font-weight: bold;
+    font-size: 14px;
+    display: inline-block;
+    padding: 0 5px;
+    border-radius: 5px;
+    text-align: center;
+}
+.old_price {
+    font-weight: bold;
+    font-size: 12px;
+    text-decoration: line-through;
+    display: block;
+    padding: 0 5px;
+    border-radius: 5px;
+    text-align: center;
+}
+.btn_readmore {
+    font-size: 12px;
+    display: inline-block;
+    text-align: center;
+    font-weight: 700;
+    padding: 2px 5px;
+    color: #fff !important;
+    background: #5867dd;
+    margin: 2px 5px;
+    cursor: pointer;
+}
+.btn_readmore:hover {
+    color: #fff;
+    background: #262626;
+}
+.indicator.up {
+    color: #0abb87;
+}
+.indicator.down {
+    color: #fd397a;
+}
+.indicator.lined {
+    color: #5867dd;
+}
+
+.btn_edition {
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin: 0 2px;
+}
+.btn_edition.edit{
+    background: #5867dd;
+}
+.btn_edition.edit:hover{
+    background: #111f94;
+    color: #fff;
+}
+.btn_edition.delete {
+    background: #fd397a;
+}
+.btn_edition.delete:hover {
+    background: #98133f;
+    color: #fff;
+}
+.hr_price {
+    float: left;
+    width: 100%;
+    border: 1px solid #ddd;
+    margin: 1px 0 5px;
+}
+.bloc_prices_container {
+    float: left;
+    width: 100%;
+}
+
+@-webkit-keyframes newrow {
+    from { background-color: #0abb87; }
+    to { background-color: inherit; }
+}
+@-moz-keyframes newrow {
+    from { background-color: #0abb87; }
+    to { background-color: inherit; }
+}
+@-o-keyframes newrow {
+    from { background-color: #0abb87; }
+    to { background-color: inherit; }
+}
+@keyframes newrow {
+    from { background-color: #0abb87; }
+    to { background-color: inherit; }
+}
+.newrow {
+    -webkit-animation: newrow 1s 5; /* Safari 4+ */
+    -moz-animation:    newrow 1s 5; /* Fx 5+ */
+    -o-animation:      newrow 1s 5; /* Opera 12+ */
+    animation:         newrow 1s 5; /* IE 10+ */
+}
+.footer {
+    height: auto;
+    padding: 10px 0.75rem;
+}

@@ -1,0 +1,13 @@
+<!--start footer-->
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                © {{ "now"|date("Y") }} <b class="text-primary">{{ get_env("APP_NAME") }}</b>. Crafted with <span class="text-danger">&hearts;</span> by
+                <a href="{{ get_env("APP_EDITOR_LINK") }}" target="_blank" class="text-decoration-none">{{ get_env("APP_EDITOR_NAME") }}</a>.<br>
+                <small>Env: <b class="text-primary">{{ get_env("APP_ENV") }}</b> - APP Version: <b class="text-primary">{{ get_env("APP_VERSION") }}</b> - PHP Version: <b class="text-primary">{{ get_php_version() }}</b></small>
+            </div>
+        </div>
+    </div>
+</footer>
+<!--end footer-->

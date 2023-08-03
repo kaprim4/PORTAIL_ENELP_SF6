@@ -1,0 +1,29 @@
+<a href="{{ path('app_' ~ home_widget.moduleName ~ (user_role.alias == 'ROLE_STATION' ? '_new' : '_index')) }}">
+    <div class="card card-animate{{ home_widget.bgColor != '' ? ' bg-' ~ home_widget.bgColor : '' }} card-height-100">
+        <!-- end card body -->
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="avatar-sm flex-shrink-0">
+                <span class="avatar-title bg-soft-light text-white rounded-2 fs-2">
+                    <i class="las {{ home_widget.module ? home_widget.icon : 'la-info' }}"></i>
+                </span>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <!-- <p class="text-uppercase fw-medium text-white-50 mb-3">
+                        <span class="counter-value" data-target="2045">0</span>
+                    </p> -->
+                    <h4 class="fs-4 mb-3 text-white">{{ home_widget.module }}</h4>
+                    <p class="text-white-50 mb-0">{{ home_widget.libelle }}</p>
+                </div>
+                <div class="flex-shrink-0 align-self-center">
+                    <span class="badge badge-soft-light fs-12">
+                        <i class="ri-arrow-up-s-line fs-13 align-middle me-1"></i>
+                        <span class="counter-value" data-target="6.11">0</span> %<span></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <!-- end card body -->
+    </div>
+    <!-- end card-->
+</a>

@@ -1,0 +1,299 @@
+{% extends 'body.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+                <i class="ri-check-double-line label-icon"></i> {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% set countdown_delay = order.createdAt|date_modify('+' ~ limit_for_cancel ~ ' minutes')|date('Y-m-d H:i:s') %}
+    {% if countdown_delay >= "now"|date('Y-m-d H:i:s') %}
+        <!-- Warning Alert -->
+        <div id="countdown-alert" class="alert alert-warning alert-dismissible alert-additional fade show" role="alert">
+            <div class="alert-body">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="ri-alert-line fs-16 align-middle"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="alert-heading">Avis pour annulation !</h5>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i> Vous avez un délai de <span
+                                    class="fw-bold text-danger">{{ limit_for_cancel }}
+                                minutes</span> pour <span class="fw-bold text-danger">modifier</span> cette commande ou
+                            éventuellement <span class="fw-bold text-danger">l'annuler et
+                                    l'abondonner</span>.
+                        </p>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i> Si vous pensez qu'il s'agit d'une <span
+                                    class="fw-bold text-danger">erreur</span> ou
+                            autre, et que vous vouliez <span class="fw-bold text-danger">annuler et
+                                abondonner</span> ce changement, merci de cliquer sur <span class="fw-bold text-danger">supprimer</span>.
+                        </p>
+                        <i id="clock-arrow" class="mdi mdi-arrow-right-bold"></i> <span id="clock"
+                                                                                        class="badge rounded-pill bg-danger fs-6"></span>
+                        <input type="hidden" id="countdown_delay" value="{{ countdown_delay }}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="alert-content">
+                <div class="mb-0 text-black overflow-hidden align-content-center">
+                    {{ include('order/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1 fs-3 text-primary">
+                <i class="las la-info bg-soft-primary rounded-circle fs-2 p-1"></i> Détails
+                <p class="text-uppercase fw-medium mt-3 mb-0 fs-6"></p>
+            </h4>
+            <div class="flex-shrink-0">
+                {% if user_role.alias == 'ROLE_STATION' %}
+                    <a href="{{ path('app_order_new') }}" class="btn btn-primary btn-md">
+                        <i class="las la-plus-circle"></i>
+                        <span class="kt-hidden-mobile">Nouvelle commande</span>
+                    </a>
+                {% endif %}
+            </div>
+        </div><!-- end card header -->
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <th>Id</th>
+                    <td>
+                        <span class="badge bg-success rounded-pill fs-6">
+                             {{ order.id }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Réf. Cmd</th>
+                    <td>{{ order.sellDocWeb }}</td>
+                </tr>
+                <tr>
+                    <th>Doc. Vente</th>
+                    <td>{{ order.sellDocSap }}</td>
+                </tr>
+                <tr>
+                    <th>Client</th>
+                    <td>
+                        Code: <b>{{ order.gasStation.codeSap }}</b><br/>
+                        <small>
+                            <i class="las la-gas-pump bg-soft-primary rounded-circle fs-4 p-1"></i>
+                            <a href="{{ path('app_gas_station_show', { 'id': order.gasStation.id }) }}">
+                                {{ order.gasStation.libelle }}
+                            </a>
+                        </small>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Date & Qté d'ordre</th>
+                    <td>
+                        {% for order_row in order.orderRows %}
+                            {% for order_history in order_row.orderHistories %}
+                                {% if order_history.orderStatus.id == 0 %}
+                                    <div class="alert bg-soft-primary alert-dismissible alert-solid alert-label-icon fade show py-2 mx-1 my-1 d-inline-block"
+                                         role="alert">
+                                        <i class="label-icon fs-6">
+                                            <b>{{ order_row.product.alias|upper }}</b>
+                                        </i>
+                                        <span class="badge badge-soft-primary p-1 fs-6">
+                                            <i class="las la-calendar-alt fs-6"></i> {{ order_history.appliedAt|date('d/m/Y') }}
+                                        </span>
+                                        <strong>
+                                            <span class="badge bg-success rounded-pill fs-6">
+                                                {{ order_history.qty }} M<sup>3</sup>
+                                            </span>
+                                        </strong>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Qté planifiée</th>
+                    <td>
+                        {% for order_row in order.orderRows %}
+                            {% for order_history in order_row.orderHistories %}
+                                {% if loop.last %}
+                                    <div class="alert bg-soft-primary alert-dismissible alert-solid alert-label-icon fade show py-2 mx-1 my-1 d-inline-block"
+                                         role="alert">
+                                        <i class="label-icon fs-6">
+                                            <b>{{ order_row.product.alias|upper }}</b>
+                                        </i>
+                                        <span class="badge badge-soft-primary p-1 fs-6">
+                                            <i class="las la-calendar-alt fs-6"></i>
+                                            {% if order_history.appliedAt|date('d/m/Y') != '30/11/-0001' %}
+                                                {{ order_history.appliedAt|date('d/m/Y') }}
+                                            {% else %}
+                                                ---
+                                            {% endif %}
+                                        </span>
+                                        <strong>
+                                            <span class="badge bg-{{ order_history.orderStatus.color }} rounded-pill fs-6">
+                                                {{ order_history.qty }} M<sup>3</sup>
+                                            </span>
+                                        </strong>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Planifications</th>
+                    <td>
+                        {% set has_shipped_status = false %}
+                        {% for order_row in order.orderRows %}
+                            {% for order_history in order_row.orderHistories %}
+                                {% if order_history.orderStatus.id == 4 %}
+                                    {% set has_shipped_status = true %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% if has_shipped_status %}
+                            <table>
+                                <tr>
+                                    {% for order_row in order.orderRows %}
+                                        <td>
+                                            <b>{{ order_row.product.alias|upper }}</b>
+                                            <i class="mdi mdi-arrow-right-bold"></i>
+                                        </td>
+                                        <td>
+                                            {% for order_history in order_row.orderHistories %}
+                                                <div class="alert bg-soft-primary alert-dismissible alert-solid alert-label-icon fade show py-2 mx-1 my-1 d-block"
+                                                     role="alert">
+                                                    <i class="label-icon fs-6"
+                                                       title="{{ order_history.orderStatus.libelle }}">
+                                                        <i class="las {{ order_history.orderStatus.icon }} bg-soft-{{ order_history.orderStatus.color }} label-icon fs-3"></i>
+                                                    </i>
+                                                    <span>
+                                                        {{ order_history.orderStatus.libelle }}:
+                                                        <span class="fw-bold">
+                                                            {% if order_history.appliedAt|date('d/m/Y') != '30/11/-0001' %}
+                                                                {{ order_history.appliedAt|date('d/m/Y') }}
+                                                            {% else %}
+                                                                ---
+                                                            {% endif %}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <span class="badge"></span>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            </table>
+                        {% else %}
+                            <table>
+                                <tr>
+                                    {% for order_row in order.orderRows %}
+                                        <td>
+                                            <b>{{ order_row.product.alias|upper }}</b>
+                                            <i class="mdi mdi-arrow-right-bold"></i>
+                                        </td>
+                                        <td>
+                                            {% for order_history in order_row.orderHistories %}
+                                                <div class="alert bg-soft-primary alert-dismissible alert-solid alert-label-icon fade show py-2 mx-1 my-1 d-block"
+                                                     role="alert">
+                                                    <i class="label-icon fs-6"
+                                                       title="{{ order_history.orderStatus.libelle }}">
+                                                        <i class="las {{ order_history.orderStatus.icon }} bg-soft-{{ order_history.orderStatus.color }} label-icon fs-3"></i>
+                                                    </i>
+                                                    <span>
+                                            {{ order_history.orderStatus.libelle }}:
+                                            <span class="fw-bold">
+                                                {% if order_history.appliedAt|date('d/m/Y') != '30/11/-0001' %}
+                                                    {{ order_history.appliedAt|date('d/m/Y') }}
+                                                {% else %}
+                                                    ---
+                                                {% endif %}
+                                            </span>
+                                        </span>
+                                                </div>
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <span class="badge"></span>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            </table>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Créé par</th>
+                    <td>
+                        {% if order.user.firstName != '' %}
+                            {{ order.user.firstName ~ ' ' ~ order.user.lastName }}
+                        {% else %}
+                            {{ order.user.gasStation.libelle }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Statut</th>
+                    <td>
+                        {% for order_row in order.orderRows %}
+                            {% for order_history in order_row.orderHistories %}
+                                {% if loop.last %}
+                                    <div class="alert bg-soft-{{ order_history.orderStatus.color }} alert-dismissible alert-solid alert-label-icon fade show py-2 mx-1 my-1 d-inline-block"
+                                         role="alert">
+                                        <i class="label-icon fs-6">
+                                            <i class="las {{ order_history.orderStatus.icon }} bg-soft-{{ order_history.orderStatus.color }} label-icon fs-3"></i>
+                                        </i>
+                                        <span class="fw-bold">
+                                            <b>{{ order_row.product.alias|upper }}</b>
+                                            <i class="mdi mdi-arrow-right-bold"></i>
+                                            <span class="text-{{ order_history.orderStatus.color }}">{{ order_history.orderStatus.libelle }}</span>
+                                        </span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                <a href="{{ path('app_order_edit', {'id': order.id}) }}" class="btn btn-success float-start">
+                    <i class="las la-edit fs-5"></i>
+                    <span class="kt-hidden-mobile">Modifier cette entrée</span>
+                </a>
+            {% else %}
+                {% if countdown_delay >= "now"|date('Y-m-d H:i:s') %}
+                    <a href="{{ path('app_order_edit', {'id': order.id}) }}" class="btn btn-success float-start">
+                        <i class="las la-edit fs-5"></i>
+                        <span class="kt-hidden-mobile">Modifier cette entrée</span>
+                    </a>
+                {% endif %}
+            {% endif %}
+            {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                {{ include('order/_delete_form.html.twig') }}
+            {% endif %}
+            <a href="{{ path('app_order_index') }}" class="btn btn-info float-end">
+                <i class="la la-arrow-left"></i>
+                <span class="kt-hidden-mobile">Retour à la liste</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

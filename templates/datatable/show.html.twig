@@ -1,0 +1,114 @@
+{% extends 'body.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+                <i class="ri-check-double-line label-icon"></i> {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <div class="card">
+        <!-- start card header -->
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1">
+                <i class="las {{ element_icon }} bg-soft-primary rounded-circle fs-2 p-1"></i> {{ title }}
+            </h4>
+            <div class="flex-shrink-0">
+                <a href="{{ list_link }}" class="btn btn-soft-info btn-md">
+                    <i class="la la-arrow-left"></i>
+                    <span class="kt-hidden-mobile">Retour à la liste</span>
+                </a>
+            </div>
+        </div>
+        <!-- end card header -->
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                {% set i = 0 %}
+                {% for field in attributes %}
+                    {% set var = attribute(element, field) %}
+                    <tr>
+                        <th>
+                            {{ fieldNames[i] }}
+                            {% set i = i+1 %}
+                        </th>
+                        <td>
+                            {% if 'image' in field %}
+                                {% if vich_uploader_asset(element, 'imageFile') is null %}
+                                    <img class="rounded-circle"
+                                         src="{{ asset('images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                         alt="{{ element.imageName }}">
+                                {% else %}
+                                    <img class="rounded-circle"
+                                         src="{{ vich_uploader_asset(element, 'imageFile') | imagine_filter('image_thumbnail') }}"
+                                         alt="{{ element.imageName }}">
+                                {% endif %}
+                            {% else %}
+                                {% if field == 'phone' %}
+                                    {% if var != '' %}
+                                        <a href="tel:{{ var }}">
+                                            <i class="las la-phone-volume text-success"></i> {{ var|phone }}
+                                        </a>
+                                    {% else %}
+                                        <i class="las la-phone-slash text-danger"></i>
+                                    {% endif %}
+                                {% elseif var is of_type('bool') %}
+                                    {% if var == 1 %}
+                                        <span class="badge badge-label bg-success">
+                                                <i class="ri-check-double-line"></i> Activé(e)
+                                            </span>
+                                    {% else %}
+                                        <span class="badge badge-label bg-danger">
+                                                <i class="ri-check-double-line"></i> Désactivé(e)
+                                            </span>
+                                    {% endif %}
+                                {% elseif field == 'icon' %}
+                                    <i class="las {{ var }}"></i>
+                                {% elseif 'Color' in field %}
+                                    <div class="p-2 bg-{{ var }}"></div>
+                                {% elseif var.timestamp is defined %}
+                                    {{ var | format_datetime('long', 'short', locale='fr', timezone='Africa/Casablanca') }}
+                                {% elseif var is of_type('object') %}
+                                    {% if field == 'supervisor' %}
+                                        {% if var.id != 0 %}
+                                            {{ var.firstName }}
+                                        {% endif %}
+                                    {% elseif field == 'gradeList' %}
+                                        {% if var|length > 0 %}
+                                            {% for grade in var %}
+                                                <span class="badge rounded-pill bg-primary text-light">{{ grade.libelle }}</span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="badge rounded-pill bg-danger text-light">Aucun produit</span>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if var.id != 0 %}
+                                            {{ var.libelle }}
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {{ var|raw('html') }}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <a href="{{ edit_link }}" class="btn btn-soft-success float-start">
+                <i class="ri-edit-2-line"></i>
+                <span class="kt-hidden-mobile">Modifier cette entrée</span>
+            </a>
+            <a href="{{ list_link }}" class="btn btn-soft-info float-end">
+                <i class="la la-arrow-left"></i>
+                <span class="kt-hidden-mobile">Retour à la liste</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}

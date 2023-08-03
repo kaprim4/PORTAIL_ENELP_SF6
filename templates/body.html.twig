@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr" data-layout="vertical" data-topbar="light" data-sidebar="dark" data-sidebar-size="lg"
+      data-sidebar-image="none" data-preloader="disable">
+<head>
+    <meta charset="utf-8"/>
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description"/>
+    <meta content="Themesbrand" name="author"/>
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{{ asset('build/assets/images/logo-sm.png') }}">
+    {{ encore_entry_link_tags('assets/libs/multi.js/multi.min.css') }}
+    {{ encore_entry_link_tags('assets/libs/@tarekraafat/autocomplete.js/css/autoComplete.css') }}
+    {{ encore_entry_link_tags('assets/libs/swiper/swiper-bundle.min') }}
+    {{ encore_entry_link_tags('assets/css/bootstrap.min') }}
+    <!-- datatables.net -->
+    {{ encore_entry_link_tags('assets/css/datatables.css') }}
+    <!-- Theme Styles -->
+    {{ encore_entry_link_tags('assets/css/theme_css') }}
+    {{ encore_entry_script_tags('assets/js/layout') }}
+</head>
+<body>
+<!-- Begin page -->
+<div id="layout-wrapper">
+    {% include '_partial/_page-topbar.html.twig' %}
+    <!-- ========== App Menu ========== -->
+    {% include '_partial/_left.sidebar.html.twig' %}
+    <!-- Left Sidebar End -->
+    <!-- Vertical Overlay-->
+    <div class="vertical-overlay"></div>
+    <!-- ============================================================== -->
+    <!-- Start right Content here -->
+    <!-- ============================================================== -->
+    <div class="main-content">
+        <div class="page-content">
+            <div class="container-fluid">
+                {% include '_partial/_breadcrumb.html.twig' %}
+                {% block body %}{% endblock %}
+            </div>
+            <!-- container-fluid -->
+        </div>
+        <!-- End Page-content -->
+        {% include '_partial/_footer.html.twig' %}
+    </div>
+    <!-- end main content-->
+</div>
+<!-- END layout-wrapper -->
+{% include '_partial/_totop.html.twig' %}
+
+<!--preloader
+<div id="preloader">
+    <div id="status">
+        <div class="spinner-border text-primary avatar-sm" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+</div>-->
+
+{% block javascripts_footer %}
+    <!-- JAVASCRIPT -->
+    {{ encore_entry_script_tags('assets/libs/bootstrap/js/bootstrap.bundle.min') }}
+    {{ encore_entry_script_tags('assets/js/plugins') }}
+
+    <!-- Dashboard init -->
+    {{ encore_entry_script_tags('assets/js/pages/dashboard-ecommerce.init') }}
+
+    <!-- multi.js -->
+    {{ encore_entry_script_tags('assets/libs/multi.js/multi.min.js') }}
+
+    <!-- autocomplete js -->
+    {{ encore_entry_script_tags('assets/libs/@tarekraafat/autocomplete.js/autoComplete.min.js') }}
+
+    <!-- form-advanced init -->
+    {{ encore_entry_script_tags('assets/js/pages/form-advanced.init') }}
+
+    <!-- datatables.net -->
+    {{ encore_entry_script_tags('assets/libs/datatables/js/datatables.js') }}
+
+    <!-- ckeditor -->
+    {{ encore_entry_script_tags('assets/libs/@ckeditor/ckeditor') }}
+
+    <!-- dropzone js -->
+    {{ encore_entry_script_tags('assets/libs/dropzone/dropzone') }}
+
+    <!-- project-create init -->
+    {{ encore_entry_script_tags('assets/js/pages/project-create.init') }}
+
+    {% if app.request.get('_route') == 'app_message_index' %}
+        <!-- mailbox init -->
+        {{ encore_entry_script_tags('assets/js/pages/mailbox.init') }}
+    {% endif %}
+
+    <!-- App js -->
+    {{ encore_entry_script_tags('assets/js/app') }}
+
+    {% if app.request.get('_route') == 'apexcharts' %}
+        <!-- apexcharts -->
+        {{ encore_entry_link_tags('assets/libs/apexcharts/apexcharts.css') }}
+        {{ encore_entry_script_tags('assets/libs/apexcharts/apexcharts.js') }}
+    {% endif %}
+{% endblock %}
+
+</body>
+
+</html>
+

@@ -1,0 +1,44 @@
+<div class="col-xl-3 col-md-6">
+    <!-- card -->
+    <div class="card card-animate">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p class="text-uppercase fw-medium text-muted mb-3">
+                        {{ 'Prix actuels'|upper }}
+                    </p>
+                    <div class="mb-0 text-50">
+                        {% if grades|length > 0 %}
+                            <table class="table mb-0">
+                                {% for grade in grades %}
+                                    {% for a_price in actual_prices %}
+                                        {% if a_price.grade.id == grade.id %}
+                                            <tr>
+                                                <th class="py-1">
+                                                    <span class="badge badge-soft-primary">{{ grade.libelle|upper }}</span>
+                                                </th>
+                                                <td class="py-1">
+                                                    <span class="badge rounded-pill bg-primary fs-6">
+                                                        <span class="counter-value" data-target="{{ a_price.price }}">0</span>
+                                                    </span>
+                                                    <span class="badge badge-soft-primary">DH<sup>TTC</sup> / Litre</span>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+                <div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-soft-success text-success rounded-circle fs-2">
+                            <i class="las la-coins"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end card body -->
+    </div><!-- end card -->
+</div>

@@ -1,0 +1,43 @@
+<div class="col-xl-4 col-md-6">
+    <!-- card -->
+    <div class="card card-animate{{ home_widget.bgColor != '' ? ' bg-' ~ home_widget.bgColor : '' }}">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p class="text-uppercase fw-bold {{ home_widget.iconColor != '' ? ' text-' ~ home_widget.iconColor : '' }} text-truncate mb-2 fs-18">
+                        {{ home_widget.libelle != '' ? home_widget.libelle : home_widget.module }}
+                    </p>
+                    {% if home_widget.mode != '' %}
+                        <h2 class="mt-0{{ home_widget.bgColor != '' ? ' ff-' ~ home_widget.bgColor : '' }} fw-semibold">
+                        <span class="badge rounded-pill
+{{ home_widget.iconColor != '' ? ' bg-' ~ home_widget.iconColor : '' }}
+{{ home_widget.bgColor != '' ? ' text-' ~ home_widget.bgColor : '' }}" style="font-size: 12px;">
+                            Taux de {{ home_widget.module }}
+                        </span>
+                            <span class="{{ home_widget.iconColor != '' ? ' text-' ~ home_widget.iconColor : '' }}">
+                            <span class="counter-value" data-target="{{ home_widget.elementsRate }}">0</span>%
+                        </span>
+                        </h2>
+                        <p class="mb-0{{ home_widget.textColor != ' text-muted' ? ' text-' ~ home_widget.textColor : '' }}">
+                            <span class="badge bg-light text-success mb-0">{{ home_widget.elementsCount }}</span>
+                            <small>dont </small>
+                            <span class="badge bg-light text-success mb-0">{{ home_widget.elementsEnableCount }}</span>
+                            <small>activé(e) et</small>
+                            <span class="badge bg-light text-success mb-0">{{ home_widget.elementsDisableCount }}</span>
+                            <small>désactivé(e)</small>
+                        </p>
+                    {% endif %}
+                </div>
+                <div>
+                    <div class="avatar-sm flex-shrink-0">
+					<span class="avatar-title rounded-circle fs-2{{ home_widget.iconColor != '' ? ' bg-' ~ home_widget.iconColor : '' }}">
+						<i class="la
+{{ home_widget.module ? home_widget.icon : 'la-info' }}
+{{ home_widget.bgColor != '' ? ' text-' ~ home_widget.bgColor : '' }} text-50"></i>
+					</span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end card body -->
+    </div> <!-- end card-->
+</div><!-- end col -->

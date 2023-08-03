@@ -1,0 +1,28 @@
+@import '~bootstrap/scss/bootstrap';
+
+.vich-image {
+  .form-check {
+    @extend .mt-3;
+    @extend .mb-2;
+  }
+  img {
+    @extend .mb-2;
+    @extend .rounded;
+    @extend .shadow;
+    @extend .img-thumbnail;
+  }
+}
+
+.pagination {
+  .paginate_button {
+    a {
+      @extend .btn, .btn-primary, .btn-sm, .ms-2;
+    }
+  }
+}
+
+.dataTables_empty{
+  padding: 25px !important;
+}
+
+

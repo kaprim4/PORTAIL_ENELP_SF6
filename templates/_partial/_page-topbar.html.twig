@@ -1,0 +1,108 @@
+<header id="page-topbar">
+    <div class="layout-width">
+        <div class="navbar-header">
+            <div class="d-flex">
+                <!-- LOGO -->
+                <div class="navbar-brand-box horizontal-logo">
+                    <a href="{{ path('app_home') }}" class="logo logo-dark">
+                        <span class="logo-sm">
+                            <img src="{{ asset('build/assets/images/logo-sm.png') }}" alt="" height="22">
+                        </span>
+                        <span class="logo-lg">
+                            <img src="{{ asset('build/assets/images/logo-dark.png') }}" alt="" height="17">
+                        </span>
+                    </a>
+                    <a href="{{ path('app_home') }}" class="logo logo-light">
+                        <span class="logo-sm">
+                            <img src="{{ asset('build/assets/images/logo-sm.png') }}" alt="" height="22">
+                        </span>
+                        <span class="logo-lg">
+                            <img src="{{ asset('build/assets/images/logo-light.png') }}" alt="" height="17">
+                        </span>
+                    </a>
+                </div>
+
+                <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger" id="topnav-hamburger-icon">
+                    <span class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
+
+            <div class="d-flex align-items-center">
+
+                {% for header_widget in header_widgets %}
+                    {% if header_widget.isActivated == 1 %}
+                        {{ include('widget/header/' ~ header_widget.alias ~ '.html.twig') }}
+                    {% endif %}
+                {% endfor %}
+
+                <!-- header-user btn -->
+                <div class="dropdown ms-sm-3 header-item topbar-user">
+                    <button type="button" class="btn" id="page-header-user-dropdown" data-bs-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                        <span class="d-flex align-items-center">
+                            {% if vich_uploader_asset(user, 'imageFile') is null %}
+                                <img class="rounded-circle header-profile-user"
+                                     src="{{ asset('build/assets/images/users/user-dummy-img.jpg') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ user.imageName }}">
+                                    {% else %}
+                                <img class="rounded-circle header-profile-user"
+                                     src="{{ vich_uploader_asset(user, 'imageFile') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ user.imageName }}">
+                            {% endif %}
+                            <span class="text-start ms-xl-2">
+                                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">
+                                    {% if user_role.alias == 'ROLE_STATION' %}
+                                        {{ user.gasStation.libelle }}
+                                    {% else %}
+                                        {{ user.firstName }} {{ user.lastName }}
+                                    {% endif %}
+                                </span>
+                                <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{ user_role.libelle }}</span>
+                            </span>
+                        </span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <!-- item-->
+                        <h6 class="dropdown-header">Bienvenue {{ user.firstName }}!</h6>
+                        <a class="dropdown-item" href="{{ path('app_user_edit', {'id': user.id}) }}">
+                            <i class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle">Profil</span>
+                        </a>
+                        <a class="dropdown-item" href="{{ path('app_message_index') }}">
+                            <i class="mdi mdi-message-text-outline text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle">Messages</span>
+                        </a>
+                        <!--<a class="dropdown-item" href="#">
+                            <i class="mdi mdi-calendar-check-outline text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle">Tableau des tâches</span>
+                        </a>-->
+                        <a class="dropdown-item" href="#">
+                            <i class="mdi mdi-lifebuoy text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle">Aide</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <!--<a class="dropdown-item" href="#">
+                            <i class="mdi mdi-wallet text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle">Balance : <b>$5971.67</b></span>
+                        </a>-->
+                        {% if user_role.alias == 'ROLE_SUPER_ADMIN' %}
+                            <a class="dropdown-item" href="#">
+                                <span class="badge bg-soft-success text-success mt-1 float-end">New</span>
+                                <i class="mdi mdi-cog-outline text-muted fs-16 align-middle me-1"></i>
+                                <span class="align-middle">Préférences</span>
+                            </a>
+                        {% endif %}
+                        <a class="dropdown-item" href="{{ path('app_logout') }}">
+                            <i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+                            <span class="align-middle" data-key="t-logout">Déconnexion</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

@@ -1,0 +1,147 @@
+<div class="col-xl-12">
+    <div class="card crm-widget">
+        <div class="card-body p-0">
+            <div class="row row-cols-md-3 row-cols-1">
+
+                <div class="col col-lg border-end">
+                    <div class="py-4 px-3">
+                        <h5 class="text-muted text-uppercase fs-13">
+                            Commandes passées <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i>
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="las la-shopping-cart display-6 text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h2 class="mb-0 text-primary">
+                                    <span class="counter-value" data-target="{{ orders|length }}">0</span>
+                                </h2>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted">
+                            <span class="badge bg-light text-success mb-0">
+                                <i class="ri-arrow-up-line align-middle"></i> 16.24 %
+                            </span> vs. previous month
+                        </p>
+                    </div>
+                </div><!-- end col -->
+
+                <div class="col col-lg border-end">
+                    <div class="py-4 px-3">
+                        <h5 class="text-muted text-uppercase fs-13">
+                            Commandes saisies <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i>
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="las la-pencil-alt display-6 text-primary"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h2 class="mb-0 text-primary">
+                                    <span class="counter-value" data-target="{{ countCreatedOrders }}">0</span>
+                                </h2>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted">
+                            <span class="badge bg-light text-success mb-0">
+                                <i class="ri-arrow-up-line align-middle"></i> 16.24 %
+                            </span> vs. previous month
+                        </p>
+                    </div>
+                </div><!-- end col -->
+
+                <div class="col col-lg border-end">
+                    <div class="py-4 px-3">
+                        <h5 class="text-muted text-uppercase fs-13">
+                            Commandes planifiées <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i>
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="las la-calendar display-6 text-info"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h2 class="mb-0 text-info">
+                                    <span class="counter-value" data-target="{{ countPlanedOrders }}">0</span>
+                                </h2>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted">
+                            <span class="badge bg-light text-success mb-0">
+                                <i class="ri-arrow-up-line align-middle"></i> 16.24 %
+                            </span> vs. previous month
+                        </p>
+                    </div>
+                </div><!-- end col -->
+
+                <div class="col col-lg border-end">
+                    <div class="py-4 px-3">
+                        <h5 class="text-muted text-uppercase fs-13">
+                            Commandes chargées <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i>
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="las la-dolly display-6 text-warning"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h2 class="mb-0 text-warning">
+                                    <span class="counter-value" data-target="{{ countLoadedOrders }}">0</span>
+                                </h2>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted">
+                            <span class="badge bg-light text-success mb-0">
+                                <i class="ri-arrow-up-line align-middle"></i> 16.24 %
+                            </span> vs. previous month
+                        </p>
+                    </div>
+                </div><!-- end col -->
+
+                <div class="col col-lg border-end">
+                    <div class="py-4 px-3">
+                        <h5 class="text-muted text-uppercase fs-13">
+                            Livrées complètement <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i>
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="las la-shipping-fast display-6 text-success"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h2 class="mb-0 text-success">
+                                    <span class="counter-value" data-target="{{ countShippedOrders }}">0</span>
+                                </h2>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted">
+                            <span class="badge bg-light text-success mb-0">
+                                <i class="ri-arrow-up-line align-middle"></i> 16.24 %
+                            </span> vs. previous month
+                        </p>
+                    </div>
+                </div><!-- end col -->
+
+                <div class="col col-lg border-end">
+                    <div class="py-4 px-3">
+                        <h5 class="text-muted text-uppercase fs-13">
+                            Livrées partiellement <i class="ri-arrow-up-circle-line text-success fs-18 float-end align-middle"></i>
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="las la-battery-half display-6 text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h2 class="mb-0 text-danger">
+                                    <span class="counter-value" data-target="{{ countPartialOrders }}">0</span>
+                                </h2>
+                            </div>
+                        </div>
+                        <p class="mb-0 text-muted">
+                            <span class="badge bg-light text-success mb-0">
+                                <i class="ri-arrow-up-line align-middle"></i> 16.24 %
+                            </span> vs. previous month
+                        </p>
+                    </div>
+                </div><!-- end col -->
+
+            </div>
+        </div>
+    </div>
+</div>

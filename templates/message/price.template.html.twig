@@ -1,0 +1,198 @@
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css">
+<div class="content"
+     style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px; display: block; margin: 0 auto; padding: 20px; width: 600px;">
+    <table class="main" width="100%" cellpadding="0" cellspacing="0" itemprop="action" itemscope=""
+           itemtype="http://schema.org/ConfirmAction"
+           style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px; margin: 0; border: none;">
+        <tbody>
+        <tr style="font-family: 'Roboto', sans-serif; font-size: 14px; margin: 0;">
+            <td class="content-wrap"
+                style="font-family: 'Roboto', sans-serif; box-sizing: border-box; color: #495057; font-size: 14px; vertical-align: top; margin: 0;padding: 30px; border-radius: 7px; background-color: #fff; border: 1px solid #ddd;" valign="top">
+                <meta itemprop="name" content="Confirm Email"
+                      style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                <table width="100%" cellpadding="0" cellspacing="0"
+                       style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                    <tbody>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0px;"
+                            valign="top">
+                            <div style="margin-bottom: 15px;">
+                                <img src="https://ssr.winxo.com/media/logo/logo-light2.png" alt="PORTAIL WINXO">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; box-sizing: border-box; line-height: 1.5; font-size: 24px; vertical-align: top; margin: 0; padding: 0 0 20px;text-align: center; font-weight: 700;"
+                            valign="top">
+                            PORTAIL WINXO
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; line-height: 1.5; font-weight: 500; vertical-align: top; margin: 0; padding: 0 0 15px;"
+                            valign="top">
+                            Bonjour <b>{{ admin_fullname }}</b>,
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; line-height: 1.5; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 10px;"
+                            valign="top">
+                            Vous avez programmé un changement de prix prévu pour le <b>{{ price.appliedAt|date("d/m/Y") }}</b>
+                            à <b>{{ price.appliedAt|date("H:i") }}</b>.<br/>Ci-dessous, le détail:
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; line-height: 1.5; font-size: 15px; vertical-align: top; margin: 0; padding: 0 0 10px;"
+                            valign="top">
+                            <ul>
+                                <li style="padding-bottom: 10px;">
+                                    <b style="width: 80px; display: inline-block;">GASOIL</b>
+                                    {% for price_row in price.priceRows %}
+                                        {% if price_row.grade.id == 2 %}
+                                            <span style="border-radius: 10px;color: #fff;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#0ab39c;">
+                                                {{ price_row.newValue }}
+                                            </span>
+                                            {% if price_row.newValue > price_row.oldValue %}
+                                                <i style="color:#0ab39c;font-size: 14px;margin: 0 15px;vertical-align: middle;"> ↑</i>
+                                            {% else %}
+                                                <i style="color:#f06548;font-size: 14px;margin: 0 15px;vertical-align: middle;"> ↓</i>
+                                            {% endif %}
+                                            <span style="border-radius: 50rem;color: #405189;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#cde0ff;text-decoration: underline;">
+                                                {{ price_row.oldValue }}
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </li>
+                                <li style="padding-bottom: 10px;">
+                                    <b style="width: 80px; display: inline-block;">SSP</b>
+                                    {% for price_row in price.priceRows %}
+                                        {% if price_row.grade.id == 1 %}
+                                            <span style="border-radius: 10px;color: #fff;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#0ab39c;">
+                                                {{ price_row.newValue }}
+                                            </span>
+                                            {% if price_row.newValue > price_row.oldValue %}
+                                                <i style="color:#0ab39c;font-size: 14px;margin: 0 15px;vertical-align: middle;"> ↑</i>
+                                            {% else %}
+                                                <i style="color:#f06548;font-size: 14px;margin: 0 15px;vertical-align: middle;"> ↓</i>
+                                            {% endif %}
+                                            <span style="border-radius: 50rem;color: #405189;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#cde0ff;text-decoration: underline;">
+                                                {{ price_row.oldValue }}
+                                            </span>
+                                        {% endif %}
+                                    {% endfor %}
+                                </li>
+                                <li style="padding-bottom: 10px;">
+                                    <b style="width: 80px; display: inline-block;">Mélange</b><br/>
+                                    {% set isMixed = false %}
+                                    {% for price_row in price.priceRows %}
+                                        {% if price_row.grade.id not in [1,2] %}
+                                            {% set isMixed = true %}
+                                            <div class="alert bg-soft-primary alert-dismissible alert-solid alert-label-icon fade show pe-1 py-2 mx-1 my-1 d-inline-block"
+                                                 role="alert">
+                                                <i class="label-icon fs-6">
+                                                    <b>{{ price_row.grade.libelle }}</b>
+                                                </i>
+                                                <strong>
+                                                    <span style="border-radius: 10px;color: #fff;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#0ab39c;">
+                                                        {{ price_row.newValue }}
+                                                    </span>
+                                                </strong>
+                                                {% if price_row.newValue > price_row.oldValue %}
+                                                    <i style="color:#0ab39c;font-size: 14px;margin: 0 15px;vertical-align: middle;"> ↑</i>
+                                                {% else %}
+                                                    <i style="color:#f06548;font-size: 14px;margin: 0 15px;vertical-align: middle;"> ↓</i>
+                                                {% endif %}
+                                                <span style="border-radius: 50rem;color: #405189;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#cde0ff;text-decoration: underline;">
+                                                    {{ price_row.oldValue }}
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if not isMixed %}
+                                        Pas de prix pour le mélange.
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; line-height: 1.5; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 10px;"
+                            valign="top">
+                            Ce prix est saisi depuis:<br/>
+                            {% if price.priceStatistics %}
+                            <div class="ps-4">
+                                <b>{{ price.priceStatistics.source }}</b>
+                                {% if price.priceStatistics.webPlateform == 'Android' %}
+                                    <i class="mdi mdi-android bg-success text-light rounded-circle fs-5 px-1"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                        {{ price.priceStatistics.buildVersion }}
+                                    </span>
+                                {% else %}
+                                    {% set wpf = price.priceStatistics.webPlateform|split('|', 3) %}
+                                    {% if 'Safari' in wpf[0] %}
+                                        <i class="mdi mdi-apple-safari bg-success text-light rounded-circle fs-5 px-1"
+                                           title="{{ wpf[0] }}"></i>
+                                        <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf[1] }}
+                                        </span>
+                                    {% elseif 'Chrome' in wpf[0] %}
+                                        {% set wpf_chrome = wpf[1]|split('.', 4) %}
+                                        <i class="mdi mdi-google-chrome badge-gradient-danger text-light rounded-circle fs-5 px-1"
+                                           title="{{ wpf[0] }}"></i>
+                                        <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_chrome[0] }}
+                                        </span>
+                                    {% elseif 'Firefox' in wpf[0] %}
+                                        {% set wpf_firefox = wpf[1]|split('.', 4) %}
+                                        <i class="mdi mdi-firefox bg-warning text-light rounded-circle fs-5 px-1"
+                                           title="{{ wpf[0] }}"></i>
+                                        <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_firefox[0] }}
+                                        </span>
+                                    {% endif %}<br>
+                                    <span class="badge text-dark fs-7">{{ wpf[0] }}</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block" itemprop="handler" itemscope="" itemtype="http://schema.org/HttpActionHandler" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; text-align: right; font-size: 14px; vertical-align: top; margin: 0; padding: 24px 0;" valign="top">
+                            <a href="{{ path('app_price_show', {'id': price.id}) }}" itemprop="url" style="border-radius: 10px;color: #fff;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#0ab39c; text-decoration: none;" onmouseover="this.style.background='#099885'" onmouseout="this.style.background='#0ab39c'" target="_blank">
+                                En savoir plus →
+                            </a>
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; border-top: 1px solid #e9ebec;">
+                        <td class="content-block" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0; padding-top: 15px" valign="top">
+                            <div style="display: flex; align-items: center;">
+                                <img src="https://ssr.winxo.com/media/favicon.png" alt="" height="35" width="35"
+                                     style="border-radius: 50px;">
+                                <div style="margin-left: 8px;">
+                                    <span style="font-weight: 600;">WINXO</span>
+                                    <p style="font-size: 13px; margin-bottom: 0px; margin-top: 3px; color: #878a99;">
+                                        Département SI
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="text-align: center; margin: 0px auto;">
+        <p style="font-family: 'Roboto', sans-serif; font-size: 14px;color: #98a6ad; margin: 15px 0 0;">
+            © {{ "now"|date("Y") }} PORTAIL WINXO. Crafted with <span style="color:#f06548;">&hearts;</span> by
+            <a href="https://www.winxo.com/" target="_blank" class="text-decoration-none">WINXO DSI</a>.
+        </p>
+    </div>
+</div>

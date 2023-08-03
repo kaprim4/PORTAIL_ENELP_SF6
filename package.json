@@ -1,0 +1,64 @@
+{
+    "devDependencies": {
+        "@babel/core": "^7.17.0",
+        "@babel/preset-env": "^7.16.0",
+        "@hotwired/stimulus": "^3.0.0",
+        "@symfony/stimulus-bridge": "^3.2.0",
+        "@symfony/webpack-encore": "^4.0.0",
+        "core-js": "^3.23.0",
+        "file-loader": "^6.0.0",
+        "node-sass": "^7.0.3",
+        "regenerator-runtime": "^0.13.9",
+        "sass-loader": "^13.2.0",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0",
+        "webpack-notifier": "^1.15.0"
+    },
+    "license": "UNLICENSED",
+    "private": true,
+    "scripts": {
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "watch": "encore dev --watch",
+        "build": "encore production --progress"
+    },
+    "dependencies": {
+        "apexcharts": "^3.36.3",
+        "bootstrap": "^5.2.3",
+        "bs-custom-file-input": "^1.3.4",
+        "countdown": "^2.6.0",
+        "datatables.net": "^1.13.1",
+        "datatables.net-buttons": "^2.3.3",
+        "datatables.net-dt": "^1.13.1",
+        "datatables.net-responsive": "^2.4.0",
+        "flatpickr": "^4.6.13",
+        "jquery": "^3.6.1",
+        "multi.js": "^0.5.3",
+        "select2": "^4.1.0-rc.0"
+    },
+    "name": "portail_enelp_sf6",
+    "version": "2.0.1",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/kaprim4/PORTAIL_ENELP_SF6.git"
+    },
+    "author": "YAHYA ALI",
+    "bugs": {
+        "url": "https://github.com/kaprim4/PORTAIL_ENELP_SF6/issues"
+    },
+    "homepage": "https://github.com/kaprim4/PORTAIL_ENELP_SF6#readme",
+    "description": "PORTAIL ENELP dédié aux gérants de station-services",
+    "keywords": [
+        "enelp",
+        "winxo",
+        "portail",
+        "depense",
+        "rh",
+        "présence",
+        "bon"
+    ]
+}

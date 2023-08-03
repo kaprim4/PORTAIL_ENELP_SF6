@@ -1,0 +1,124 @@
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css">
+<div class="content"
+     style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; max-width: 600px; display: block; margin: 0 auto; padding: 20px; width: 600px;">
+    <table class="main" width="100%" cellpadding="0" cellspacing="0" itemprop="action" itemscope=""
+           itemtype="http://schema.org/ConfirmAction"
+           style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; border-radius: 3px; margin: 0; border: none;">
+        <tbody>
+        <tr style="font-family: 'Roboto', sans-serif; font-size: 14px; margin: 0;">
+            <td class="content-wrap"
+                style="font-family: 'Roboto', sans-serif; box-sizing: border-box; color: #495057; font-size: 14px; vertical-align: top; margin: 0;padding: 30px; box-shadow: 0 3px 15px rgba(30,32,37,.06); ;border-radius: 7px; background-color: #fff;"
+                valign="top">
+                <meta itemprop="name" content="Confirm Email"
+                      style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                <table width="100%" cellpadding="0" cellspacing="0"
+                       style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                    <tbody>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0px;"
+                            valign="top">
+                            <div style="margin-bottom: 15px;">
+                                <img src="https://ssr.winxo.com/media/logo/logo-light2.png" alt="PORTAIL WINXO ">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; box-sizing: border-box; line-height: 1.5; font-size: 24px; vertical-align: top; margin: 0; padding: 0 0 20px;text-align: center; font-weight: 700;"
+                            valign="top">
+                            PORTAIL WINXO
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; line-height: 1.5; font-weight: 500; vertical-align: top; margin: 0; padding: 0 0 15px;"
+                            valign="top">
+                            Bonjour <b>{{ admin_fullname }}</b>,
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block"
+                            style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; line-height: 1.5; font-size: 14px; vertical-align: top; margin: 0; padding: 0 0 10px;"
+                            valign="top">
+                            Vous avez saisi une commande pour le <b>{{ order.orderRows[0].orderHistories[0].appliedAt|date("d/m/Y") }}</b>.<br/>
+                            Ci-dessous, le détail:
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block" style="font-family: 'Roboto', sans-serif; color: #878a99; box-sizing: border-box; line-height: 1.5; font-size: 15px; vertical-align: top; margin: 0; padding: 0 0 10px;" valign="top">
+                            <ul>
+                                <li style="padding-bottom: 10px;">
+                                    <b style="width: 150px; display: inline-block;">Réf. Cmd</b>
+                                    {{ order.sellDocWeb }}
+                                </li>
+                                <li style="padding-bottom: 10px;">
+                                    <b style="width: 150px; display: inline-block;">Code Client</b>
+                                    {{ order.gasStation.codeSap }}
+                                    <small>
+                                        <i class="las la-gas-pump bg-soft-primary rounded-circle fs-4 p-1"></i>
+                                        <a href="{{ path('app_gas_station_show', { 'id': order.gasStation.id }) }}">
+                                            {{ order.gasStation.libelle }}
+                                        </a>
+                                    </small>
+                                </li>
+                                <li style="padding-bottom: 10px;">
+                                    <b style="width: 150px; display: inline-block;">Date & Qté d'ordre</b>
+                                    {% for order_row in order.orderRows %}
+                                        {% for order_history in order_row.orderHistories %}
+                                            {% if order_history.orderStatus.id == 0 %}
+                                                <div class="alert bg-soft-primary alert-dismissible alert-solid alert-label-icon fade show py-2 mx-1 my-1 d-inline-block"
+                                                     role="alert">
+                                                    <i class="label-icon fs-6">
+                                                        <b>{{ order_row.product.alias|upper }}</b>
+                                                    </i>
+                                                    <span class="badge badge-soft-primary p-1 fs-6">
+                                                        <i class="las la-calendar-alt fs-6"></i> {{ order_history.appliedAt|date('d/m/Y') }}
+                                                    </span>
+                                                    <strong>
+                                                        <span class="badge bg-success rounded-pill fs-6">
+                                                            {{ order_history.qty }} M<sup>3</sup>
+                                                        </span>
+                                                    </strong>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0;">
+                        <td class="content-block" itemprop="handler" itemscope="" itemtype="http://schema.org/HttpActionHandler" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; text-align: right; font-size: 14px; vertical-align: top; margin: 0; padding: 24px 0;" valign="top">
+                            <a href="{{ path('app_order_show', {'id': order.id}) }}" itemprop="url" style="border-radius: 10px;color: #fff;display: inline-block;font-size: 14px;font-weight: 600;line-height: 1;padding: 0.35em 0.65em;text-align: center;vertical-align: baseline;white-space: nowrap; background-color:#0ab39c; text-decoration: none;" onmouseover="this.style.background='#099885'" onmouseout="this.style.background='#0ab39c'" target="_blank">
+                                En savoir plus →
+                            </a>
+                        </td>
+                    </tr>
+                    <tr style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; border-top: 1px solid #e9ebec;">
+                        <td class="content-block" style="font-family: 'Roboto', sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 0; padding-top: 15px" valign="top">
+                            <div style="display: flex; align-items: center;">
+                                <img src="https://ssr.winxo.com/media/favicon.png" alt="" height="35" width="35"
+                                     style="border-radius: 50px;">
+                                <div style="margin-left: 8px;">
+                                    <span style="font-weight: 600;">WINXO</span>
+                                    <p style="font-size: 13px; margin-bottom: 0px; margin-top: 3px; color: #878a99;">
+                                        Département SI
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div style="text-align: center; margin: 0px auto;">
+        <p style="font-family: 'Roboto', sans-serif; font-size: 14px;color: #98a6ad; margin: 15px 0 0;">
+            © {{ "now"|date("Y") }} PORTAIL WINXO. Crafted with <span style="color:#f06548;">&hearts;</span> by
+            <a href="https://www.winxo.com/" target="_blank" class="text-decoration-none">WINXO DSI</a>.
+        </p>
+    </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="col-md-3">
+    <!-- card -->
+    <div class="card card-animate bg-primary">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <p class="fw-medium text-white-50 mb-0">
+                        Code SAP: <b>{{ user.gasStation.codeSap }}</b>
+                    </p>
+                    <h2 class="mt-4 ff-secondary fw-semibold text-white fs-5">
+                        {{ user.gasStation.libelle }}
+                    </h2>
+                    <p class="mb-0 text-white-50">
+                        {% if user.gasStation.supervisor.id != 0 %}
+                            <span class="badge badge-soft-light mb-0">
+                                <i class="las la-user-tie bg-soft-primary rounded-circle fs-5 p-1"></i>
+                                {{ user.gasStation.supervisor.firstName ~ ' - ' ~ user.gasStation.supervisor.lastName }}
+                           </span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <div class="avatar-sm flex-shrink-0">
+                        <span class="avatar-title bg-soft-light rounded-circle fs-2">
+                            <i class="las la-gas-pump"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div><!-- end card body -->
+    </div><!-- end card -->
+</div>

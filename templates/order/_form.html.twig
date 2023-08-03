@@ -1,0 +1,147 @@
+{{ form_start(form, {attr: {novalidate: 'novalidate'}}) }}
+<div class="card-body">
+    <div class="alert alert-warning alert-dismissible alert-additional fade show mb-0" role="alert">
+        <div class="alert-body">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="d-flex">
+                <div class="flex-shrink-0 me-3">
+                    <i class="ri-alert-line fs-16 align-middle"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading">Rappel !</h5>
+                    <p class="mb-0">
+                        <i class="mdi mdi-circle-medium"></i> Pour des règles de gestion internes, nous vous rappelons
+                        les conditions de saisie des commandes:
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="alert-content text-dark">
+            <p class="mb-0">
+                <i class="mdi mdi-arrow-right-bold"></i>
+                Vous avez droit à <span class="fs-5 fw-bold">{{ limit_for_add }}</span> commande livrée par jour.
+            </p>
+            <p class="mb-0">
+                <i class="mdi mdi-arrow-right-bold"></i>
+                Toute commande saisie après le <span class="fs-5 fw-bold">{{ param_day_suspend_from }}</span> à <span
+                        class="fs-5 fw-bold">{{ param_time_suspend_from }}</span> ne sera prise en considération
+                qu'après le <span class="fs-5 fw-bold">{{ param_day_suspend_to }}</span> à <span
+                        class="fs-5 fw-bold">{{ param_time_suspend_to }}</span>.
+            </p>
+            <p class="mb-0">
+                <i class="mdi mdi-arrow-right-bold"></i>
+                Vous avez un délai de <span class="fs-5 fw-bold">{{ limit_for_cancel }}</span> minutes pour annuler et
+                abandonner une commande.
+            </p>
+            <p class="mb-0">
+                <i class="mdi mdi-arrow-right-bold"></i>
+                Quantité maximale à commander est : <span class="fs-5 fw-bold">{{ limit_for_car_max }}</span>
+                M<sup>3</sup>.
+            </p>
+        </div>
+    </div>
+
+    <p class="text-muted">
+
+    </p>
+
+    <div class="live-preview">
+        <div class="row">
+
+            {% set qty_6 = 0 %}
+            {% set qty_3 = 0 %}
+            {% set date = desired_delivery_date %}
+            {% if 'new' not in app.request.get('_route') %}
+                {% for orderRow in order.orderRows %}
+                    {% if orderRow.product.id == 6 %}
+                        {% for orderHistory in orderRow.orderHistories %}
+                            {% if loop.first %}
+                                {% set qty_6 = orderHistory.qty %}
+                                {% set date = orderHistory.appliedAt %}
+                            {% endif %}
+                        {% endfor %}
+                    {% elseif orderRow.product.id == 3 %}
+                        {% for orderHistory in orderRow.orderHistories %}
+                            {% if loop.first %}
+                                {% set qty_3 = orderHistory.qty %}
+                                {% set date = orderHistory.appliedAt %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <div class="col-md-6 col-lg-4 my-4">
+                <label for="grade1_val" class="form-label fw-bolder">{{ 'Super sans plomb'|upper }}</label>
+                <div class="qty_input input-group">
+                    <input id="grade1_val" type="number" class="form-control" name="order_detail[0][qty]"
+                           placeholder="Quantité d'ordre" value="{{ qty_3 }}" min="{{ limit_for_car_min }}"
+                           max="{{ limit_for_car_max }}" step="1"/>
+                    <span class="input-group-text">{{ order_car_unit|raw }}</span>
+                    <input type="hidden" name="order_detail[0][id_product]" value="3"/>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 my-4">
+                <label for="grade2_val" class="form-label fw-bolder">{{ 'Gasoil'|upper }}</label>
+                <div class="qty_input input-group">
+                    <input id="grade2_val" type="number" class="form-control" name="order_detail[1][qty]"
+                           placeholder="Quantité d'ordre" value="{{ qty_6 }}" min="{{ limit_for_car_min }}"
+                           max="{{ limit_for_car_max }}" step="1"/>
+                    <span class="input-group-text">{{ order_car_unit|raw }}</span>
+                    <input type="hidden" name="order_detail[1][id_product]" value="6"/>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 my-4">
+                <label for="sum_qty" class="form-label fw-bolder">
+                    <i class="las la-shipping-fast"></i> {{ 'Total à commander :'|upper }}
+                </label>
+                <div class="qty_input input-group input-readonly">
+                    <input id="sum_qty" type="text" class="form-control bg-soft-info text-primary fw-bold"
+                           value="{{ qty_6 + qty_3 }}"
+                           readonly/>
+                    <div class="input-group-append">
+                        <span class="input-group-text text-primary fw-bold">{{ order_car_unit|raw }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-lg-4 my-4">
+                <label for="desired_delivery_date" class="form-label fw-bolder required text-success">
+                    {{ 'Date de livraison souhaitée'|upper }}
+                </label>
+                <input id="desired_delivery_date" type="date" class="form-control"
+                       min="{{ date|date("Y-m-d") }}" name="desired_delivery_date"
+                       value="{{ date|date("Y-m-d") }}" required/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card-footer overflow-hidden">
+    {% if 'new' in app.request.get('_route') %}
+        <input type="hidden" name="action_form" value="order_add"/>
+        <button class="btn btn-success me-5" type="submit"
+                onclick="return confirm('Voulez vous procèder à la création de cette commande ?');">
+            <i class="las la-check-circle"></i>
+            <span class="kt-hidden-mobile">{{ button_label|default('Confirmer') }}</span>
+        </button>
+    {% else %}
+        <input type="hidden" name="action_form" value="order_edit"/>
+        <button class="btn btn-success me-5" type="submit"
+                onclick="return confirm('Voulez vous procèder à la modification de cette commande ?');">
+            <i class="las la-check-circle"></i>
+            <span class="kt-hidden-mobile">{{ button_label|default('Confirmer') }}</span>
+        </button>
+    {% endif %}
+    <button class="btn btn-soft-primary" type="reset">
+        <i class="las la-reply"></i>
+        <span class="kt-hidden-mobile">Annuler</span>
+    </button>
+    <input id="limit_for_car_max" type="hidden" value="{{ limit_for_car_max }}"/>
+</div>
+
+{{ form_end(form) }}

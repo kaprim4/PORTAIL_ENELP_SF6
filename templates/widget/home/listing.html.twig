@@ -1,0 +1,118 @@
+<div class="col-xl-6">
+
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1">
+                <a href="{{ path(app.request.attributes.get('_route')) }}{{ home_widget.moduleName }}">
+                    {% if home_widget.icon != '' %}
+                        <i class="la {{ home_widget.icon }}"></i> {{ home_widget.module }}
+                    {% endif %}
+                </a>
+            </h4>
+            <div class="flex-shrink-0">
+                <a href="{{ path(app.request.attributes.get('_route')) }}{{ home_widget.moduleName }}/new"
+                   class="btn btn-soft-primary btn-md">
+                    <i class="ri-add-circle-line"></i>
+                    <span class="kt-hidden-mobile">Nouvelle entrée ({{ home_widget.module }})</span>
+                </a>
+            </div>
+        </div><!-- end card header -->
+        <div class="card-body">
+            <table id="buttons-datatables" class="display table table-striped table-responsive dataTable">
+                <thead class="table-secondary">
+                <tr>
+                    {% for field in home_widget.fieldNames %}
+                        <th>{{ field }}</th>
+                    {% endfor %}
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for element in home_widget.elements %}
+                    <tr class="align-middle">
+                        {% for field in home_widget.attributes %}
+                            {% set var = attribute(element, field) %}
+                            <td>
+                                {% if 'image' in field %}
+                                    {% if vich_uploader_asset(element, 'imageFile') is null %}
+                                        <img class="rounded-circle"
+                                             src="{{ asset('images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                             alt="{{ element.imageName }}">
+                                    {% else %}
+                                        <img class="rounded-circle"
+                                             src="{{ vich_uploader_asset(element, 'imageFile') | imagine_filter('image_thumbnail') }}"
+                                             alt="{{ element.imageName }}">
+                                    {% endif %}
+                                {% else %}
+                                    {% if field == 'phone' %}
+                                        {% if var != '' %}
+                                            <a href="tel:{{ var }}">
+                                                <i class="las la-phone-volume text-success"></i> {{ var|phone }}
+                                            </a>
+                                        {% else %}
+                                            <i class="las la-phone-slash text-danger"></i>
+                                        {% endif %}
+                                    {% elseif var is of_type('bool') %}
+                                        {% if var == 1 %}
+                                            <span class="badge badge-label bg-success">
+                                                <i class="ri-check-double-line"></i> Activé(e)
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-label bg-danger">
+                                                <i class="ri-check-double-line"></i> Désactivé(e)
+                                            </span>
+                                        {% endif %}
+                                    {% elseif field == 'icon' %}
+                                        <i class="las {{ var }}"></i>
+                                    {% elseif 'Color' in field %}
+                                        <div class="p-2 bg-{{ var }}"></div>
+                                    {% elseif var.timestamp is defined %}
+                                        {{ var | format_datetime('long', 'short', locale='fr', timezone='Africa/Casablanca') }}
+                                    {% elseif var is of_type('object') %}
+                                        {{ var.libelle }}
+                                    {% elseif var is of_type('array') %}
+                                        {{ var[0] }}
+                                    {% else %}
+                                        {{ var|raw('html') }}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        <td>
+                            <div class="align-content-center">
+                                <div class="hstack gap-3">
+                                    <div class="p-1 px-2">
+                                        <a class="btn btn-secondary btn-icon btn-sm waves-effect waves-light ml-2 ms-2"
+                                           href="{{ path(app.request.attributes.get('_route')) }}{{ element.id }}/edit"
+                                           title="Modifier">
+                                            <i class="ri-edit-2-line"></i>
+                                        </a>
+                                        {{ include('datatable/_delete_form.html.twig') }}
+                                    </div>
+                                    <div class="vr"></div>
+                                    <div class="p-1 px-2">
+                                        {% if element.isActivited == 1 %}
+                                            <a class="btn btn-warning btn-icon btn-sm waves-effect waves-light"
+                                               href="{{ path(app.request.attributes.get('_route')) }}{{ element.id }}/disable"
+                                               title="Désactiver">
+                                                <i class="las la-power-off"></i>
+                                            </a>
+                                        {% else %}
+                                            <a class="btn btn-success btn-icon btn-sm waves-effect waves-light"
+                                               href="{{ path(app.request.attributes.get('_route')) }}{{ element.id }}/enable"
+                                               title="Activer">
+                                                <i class="las la-power-off"></i>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div><!-- end col-->

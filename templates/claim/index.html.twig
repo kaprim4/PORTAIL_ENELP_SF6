@@ -1,0 +1,217 @@
+{% extends 'body.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+                <i class="ri-check-double-line label-icon"></i> {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if user_role.alias == 'ROLE_STATION' %}
+        <div class="row">
+            {{ include('claim/kpi/_site.info.html.twig') }}
+            {{ include('claim/kpi/_claim.info.html.twig') }}
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1 fs-3 text-primary">
+                {% if user_role.alias == 'ROLE_STATION' %}
+                    <i class="las la-history bg-soft-primary rounded-circle fs-2 p-1"></i> Historique
+                {% else %}
+                    <i class="las la-info bg-soft-primary rounded-circle fs-2 p-1"></i> Liste des interventions techniques
+                {% endif %}
+                <p class="text-uppercase fw-medium mt-3 mb-0 fs-6">
+                    Liste des interventions techniques sur système. Par défaut, les résultats sont limitées
+                    sur <b>{{ limit_for_list }}</b> jour(s).
+                </p>
+            </h4>
+            {% if user_role.alias == 'ROLE_STATION' %}
+                <div class="flex-shrink-0">
+                    <a href="{{ path('app_claim_new') }}" class="btn btn-primary btn-md">
+                        <i class="las la-plus-circle"></i>
+                        <span class="kt-hidden-mobile">Nouvelle réclamation</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <!-- end card header -->
+
+        <!-- start card body -->
+        <div class="card-body">
+            <table id="buttons-datatables" class="display table table-striped table-responsive dataTable">
+                <thead class="table-secondary">
+                <tr>
+                    <th>#</th>
+                    <th>Site</th>
+                    <th>Référence Ticket</th>
+                    <th>Date & Heure</th>
+                    <th>Description</th>
+                    <th>Audio</th>
+                    <th>Img 1</th>
+                    <th>Img 2</th>
+                    <th>Img 3</th>
+                    <th>Img 4</th>
+                    <th>Mail envoyé ?</th>
+                    <th><i class="las la-laptop-code"></i></th>
+                    <th>Statut</th>
+                    <th>Opérations</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% set new_row = true %}
+                {% for claim in claims %}
+                    <tr {% if new_row %} class="newrow"{% endif %}>
+                        {% set new_row = false %}
+                        <td>{{ claim.id }}</td>
+                        <td>
+                            <b>{{ claim.gasStation.codeSap }}</b> -
+                            <a href="{{ path('app_gas_station_show', { 'id': claim.gasStation.id }) }}">
+                                {{ claim.gasStation.libelle }}
+                            </a>
+                            {% if claim.gasStation.supervisor.id != 0 %}
+                                <br>
+                                <small>
+                                    <i class="las la-user-tie bg-soft-primary rounded-circle fs-5 p-1"></i>
+                                    {{ claim.gasStation.supervisor.firstName ~ ' - ' ~ claim.gasStation.supervisor.lastName }}
+                                </small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill bg-success fs-6">
+                                {{ claim.reference }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if claim.createdAt %}
+                            <span class="fw-bold">
+                                <i class="las la-calendar-alt bg-soft-primary rounded-circle p-1"></i> {{ claim.createdAt|date('d/m/Y') }}
+                                <br>
+                                <i class="las la-clock bg-soft-primary rounded-circle p-1 mt-1"></i> {{ claim.createdAt|date('H:i') }}
+                            </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ claim.description|raw }}
+                        </td>
+                        <td>
+                            {{ claim.audio }}
+                        </td>
+                        <td>
+                            {% if vich_uploader_asset(claim, 'imageFile1') is null %}
+                                <img class="rounded-circle"
+                                     src="{{ asset('build/assets/images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName1 }}">
+                            {% else %}
+                                <img class="rounded-circle"
+                                     src="{{ vich_uploader_asset(claim, 'imageFile1') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName1 }}">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if vich_uploader_asset(claim, 'imageFile2') is null %}
+                                <img class="rounded-circle"
+                                     src="{{ asset('build/assets/images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName2 }}">
+                            {% else %}
+                                <img class="rounded-circle"
+                                     src="{{ vich_uploader_asset(claim, 'imageFile2') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName2 }}">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if vich_uploader_asset(claim, 'imageFile3') is null %}
+                                <img class="rounded-circle"
+                                     src="{{ asset('build/assets/images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName3 }}">
+                            {% else %}
+                                <img class="rounded-circle"
+                                     src="{{ vich_uploader_asset(claim, 'imageFile3') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName3 }}">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if vich_uploader_asset(claim, 'imageFile4') is null %}
+                                <img class="rounded-circle"
+                                     src="{{ asset('build/assets/images/no_image.png') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName4 }}">
+                            {% else %}
+                                <img class="rounded-circle"
+                                     src="{{ vich_uploader_asset(claim, 'imageFile4') | imagine_filter('image_thumbnail') }}"
+                                     alt="{{ claim.imageName4 }}">
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if claim.isMailSent == 1 %}
+                                <span class="badge badge-label bg-success">
+                                    <i class="ri-check-double-line"></i> Oui
+                                </span>
+                            {% else %}
+                                <span class="badge badge-label bg-danger">
+                                    <i class="ri-check-double-line"></i> Non
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if claim.claimStatistic %}
+                                <b>{{ claim.claimStatistic.source }}</b><br>
+                                {% if claim.claimStatistic.webPlateform == 'Android' %}
+                                    <i class="mdi mdi-android bg-success text-light rounded-circle fs-5 px-1"></i>
+                                    <span class="badge badge-soft-primary rounded-pill fs-7">
+                                        {{ claim.claimStatistic.buildVersion }}
+                                    </span>
+                                {% else %}
+                                    {% set wpf = claim.claimStatistic.webPlateform|split('|', 3) %}
+                                    {% if 'Safari' in wpf[0] %}
+                                        <i class="mdi mdi-apple-safari bg-success text-light rounded-circle fs-5 px-1"
+                                           title="{{ wpf[0] }}"></i>
+                                        <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf[1] }}
+                                        </span>
+                                    {% elseif 'Chrome' in wpf[0] %}
+                                        {% set wpf_chrome = wpf[1]|split('.', 4) %}
+                                        <i class="mdi mdi-google-chrome badge-gradient-danger text-light rounded-circle fs-5 px-1"
+                                           title="{{ wpf[0] }}"></i>
+                                        <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_chrome[0] }}
+                                        </span>
+                                    {% elseif 'Firefox' in wpf[0] %}
+                                        {% set wpf_chrome = wpf[1]|split('.', 4) %}
+                                        <i class="mdi mdi-firefox bg-warning text-light rounded-circle fs-5 px-1"
+                                           title="{{ wpf[0] }}"></i>
+                                        <span class="badge badge-soft-primary rounded-pill fs-7">
+                                            {{ wpf_chrome[0] }}
+                                        </span>
+                                    {% endif %}<br>
+                                    <span class="badge text-dark fs-7">{{ wpf[0] }}</span>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="fw-bold">
+                                <i class="las {{ claim.claimStatus.icon }} bg-soft-{{ claim.claimStatus.color }} rounded-circle p-1 mt-1"></i>
+                                <span class="text-{{ claim.claimStatus.color }}">{{ claim.claimStatus.libelle }}</span>
+                            </span>
+                        </td>
+                        <td>
+                            <a class="btn btn-secondary btn-icon btn-sm waves-effect waves-light ml-2 ms-2"
+                               href="{{ path('app_claim_show', {'id': claim.id}) }}"
+                               title="Modifier">
+                                <i class="las la-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- end card body -->
+    </div>
+{% endblock %}

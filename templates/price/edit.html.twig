@@ -1,0 +1,74 @@
+{% extends 'body.html.twig' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for type, messages in app.flashes() %}
+        {% for message in messages %}
+            <div class="alert alert-{{ type }} alert-dismissible alert-solid alert-label-icon fade show" role="alert">
+                <i class="ri-check-double-line label-icon"></i> {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="row">
+        {{ include('price/kpi/_site.info.html.twig') }}
+        {{ include('price/kpi/_wholesale.price.info.html.twig') }}
+        {{ include('price/kpi/_actual.price.info.html.twig') }}
+    </div>
+
+    {% set countdown_delay = price.createdAt|date_modify('+' ~ limit_for_cancel ~ ' minutes')|date('Y-m-d H:i:s') %}
+    {% if countdown_delay >= "now"|date('Y-m-d H:i:s') %}
+        <!-- Warning Alert -->
+        <div id="countdown-alert" class="alert alert-warning alert-dismissible alert-additional fade show" role="alert">
+            <div class="alert-body">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="d-flex">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="ri-alert-line fs-16 align-middle"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="alert-heading">Avis pour annulation !</h5>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i> Vous avez un délai de <b>{{ limit_for_cancel }}
+                                minutes</b> pour annuler et
+                            abondonner ce changement de prix.
+                        </p>
+                        <p class="mb-2">
+                            <i class="mdi mdi-arrow-right-bold"></i> Si vous pensez qu'il s'agit d'une <b>erreur</b> ou
+                            autre, et que vous vouliez <b>annuler et
+                                abondonner</b> ce changement, merci de cliquer sur <b>supprimer</b>.
+                        </p>
+                        <i id="clock-arrow" class="mdi mdi-arrow-right-bold"></i> <span id="clock"
+                                                                                        class="badge rounded-pill bg-danger fs-6"></span>
+                        <input type="hidden" id="countdown_delay" value="{{ countdown_delay }}"/>
+                    </div>
+                </div>
+            </div>
+            <div class="alert-content">
+                <div class="mb-0 text-black overflow-hidden align-content-center">
+                    {{ include('price/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header align-items-center d-flex">
+            <h4 class="card-title mb-0 flex-grow-1 fs-3 text-primary">
+                <i class="las la-gas-pump bg-soft-primary rounded-circle fs-2 p-1"></i> Modifier ce changement de prix
+                <p class="text-uppercase fw-medium mt-3 mb-0 fs-6">
+                    Prix décidés à être appliqués lors du prochain cycle de changement de prix.
+                </p>
+            </h4>
+            <div class="flex-shrink-0">
+                <a href="{{ path('app_price_index') }}" class="btn btn-soft-primary btn-md">
+                    <i class="las la-list"></i>
+                    <span class="kt-hidden-mobile">Retour à la liste</span>
+                </a>
+            </div>
+        </div><!-- end card header -->
+        {{ include('price/_form.html.twig') }}
+    </div>
+{% endblock %}

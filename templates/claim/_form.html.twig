@@ -1,0 +1,104 @@
+{{ form_start(form) }}
+<div class="card-body">
+    <div class="alert alert-warning alert-dismissible alert-additional fade show mb-0" role="alert">
+        <div class="alert-body">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="d-flex">
+                <div class="flex-shrink-0 me-3">
+                    <i class="ri-alert-line fs-16 align-middle"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading">Rappel !</h5>
+                    <p class="mb-0">
+                        <i class="mdi mdi-circle-medium"></i> Pour des régles de gestion internes, nous vous rappelons
+                        les conditions de saisie des tickets pour les interventions techniques:
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="alert-content text-dark">
+            <p class="mb-0">
+                <i class="mdi mdi-arrow-right-bold"></i>
+                La <span class="fs-5 fw-bold">référence</span> du ticket ainsi que la <span class="fs-5 fw-bold">date et heure</span> de saisie sont calculés <span class="fs-5 fw-bold">automatiquement</span>.
+            </p>
+            <p class="mb-0">
+                <i class="mdi mdi-arrow-right-bold"></i>
+                Vous avez droit à importer jusqu'à <span class="fs-5 fw-bold">4 images</span> par ticket.
+            </p>
+        </div>
+    </div>
+
+    <p class="text-muted">
+
+    </p>
+
+    <div class="live-preview">
+        <div class="row">
+            <div class="col-md-6 my-2">
+                <div class="row">
+                    <div class="col-md-4 my-2">
+                        <label for="reference" class="form-label fw-bolder required">{{ 'Référence'|upper }}</label>
+                        <input id="reference" type="text" class="form-control bg-soft-success text-success fw-bolder fs-3 py-0 text-center" name="reference" value="{{ next_ref }}" readonly/>
+                    </div>
+                    <div class="col-md-8 my-2">
+                        <label for="proposalAppDate" class="form-label fw-bolder required text-success">
+                            {{ "Date et heure de réclamation"|upper }}
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="date" class="form-control bg-soft-success text-success fw-bolder fs-3 py-0 text-center" value="{{ "now"|date("Y-m-d") }}" name="proposalAppDate" readonly/>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="time" class="form-control bg-soft-success text-success fw-bolder fs-3 py-0 text-center" value="{{ "now"|date('H:i') }}" name="proposalAppTime" readonly/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 my-2">
+                <label for="description" class="form-label fw-bolder required">{{ 'Détail de la panne *'|upper }}</label>
+                <textarea id="ckeditor-classic" name="description">
+                    {% if 'edit' in app.request.get('_route') %}
+                        {{ claim.description }}
+                    {% endif %}
+                </textarea>
+            </div>
+            <div class="col-md-6 my-2">
+                <div class="row">
+                    {{ form_row(form.imageFile1) }}
+                    {{ form_row(form.imageFile2) }}
+                    {{ form_row(form.imageFile3) }}
+                    {{ form_row(form.imageFile4) }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="card-footer overflow-hidden">
+    {% if 'new' in app.request.get('_route') %}
+        <input type="hidden" name="claim_form" value="claim_add"/>
+        <button class="btn btn-success me-5" type="submit"
+                onclick="return confirm('Voulez vous procèder à l\'ajout de cette réclamation ?');">
+            <i class="las la-check-circle"></i>
+            <span class="kt-hidden-mobile">{{ button_label|default('Confirmer') }}</span>
+        </button>
+    {% else %}
+        <input type="hidden" name="claim_form" value="claim_edit"/>
+        <button class="btn btn-success me-5" type="submit"
+                onclick="return confirm('Voulez vous procèder à la modification de cette réclamation ?');">
+            <i class="las la-check-circle"></i>
+            <span class="kt-hidden-mobile">{{ button_label|default('Confirmer') }}</span>
+        </button>
+    {% endif %}
+    <button class="btn btn-soft-primary" type="reset">
+        <i class="las la-reply"></i>
+        <span class="kt-hidden-mobile">Annuler</span>
+    </button>
+</div>
+
+{{ form_end(form) }}
